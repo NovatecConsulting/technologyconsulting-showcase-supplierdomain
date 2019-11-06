@@ -1,0 +1,9 @@
+{
+	"componentDemands": [
+		{
+			"componentId": "100",
+			"quantity": 20,
+			"location": 1
+		}
+	]
+}
