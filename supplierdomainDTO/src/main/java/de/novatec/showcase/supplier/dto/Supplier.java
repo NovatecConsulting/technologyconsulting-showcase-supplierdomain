@@ -24,6 +24,16 @@ public class Supplier implements Serializable {
     public Supplier() {
     }
 
+	public Supplier(String name, String contact, String replyUrl, String wsUrl, Address address, int version) {
+		super();
+		this.name = name;
+		this.contact = contact;
+		this.replyUrl = replyUrl;
+		this.wsUrl = wsUrl;
+		this.address = address;
+		this.version = version;
+	}
+
 	public Integer getId() {
 		return this.id;
 	}

@@ -29,15 +29,13 @@
 	<basicRegistry id="basic" realm="defaultRealm">
 		<user name="admin" password="adminpwd" />
 		<user name="testuser" password="pwd" />
+		<user name="orderer" password="pwd" />
 
 		<group name="SUPPLIERDOMAIN.SUPPLIER">
 			<member name="testuser" />
 		</group>
-		<group name="SUPPLIERDOMAIN.CUSTOMER">
-			<member name="testuser" />
-		</group>
-		<group name="SUPPLIERDOMAIN.ORDER">
-			<member name="testuser" />
+		<group name="SUPPLIERDOMAIN.ORDERER">
+			<member name="orderer" />
 		</group>
 		<group name="SUPPLIERDOMAIN.ADMIN">
 			<member name="admin" />
@@ -50,11 +48,11 @@
 			<security-role name="SUPPLIERDOMAIN.SUPPLIER">
 				<group name="SUPPLIERDOMAIN.SUPPLIER" />
 			</security-role>
-			<security-role name="SUPPLIERDOMAIN.CUSTOMER">
-				<group name="SUPPLIERDOMAIN.CUSTOMER" />
+			<security-role name="SUPPLIERDOMAIN.PURCHASE">
+				<group name="SUPPLIERDOMAIN.ORDERER" />
 			</security-role>
-			<security-role name="SUPPLIERDOMAIN.ORDER">
-				<group name="SUPPLIERDOMAIN.ORDER" />
+			<security-role name="SUPPLIERDOMAIN.PROCESS.DELIVERY">
+				<group name="SUPPLIERDOMAIN.SUPPLIER" />
 			</security-role>
 			<security-role name="SUPPLIERDOMAIN.ADMIN">
 				<group name="SUPPLIERDOMAIN.ADMIN" />

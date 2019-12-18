@@ -39,7 +39,7 @@ public interface SupplierService {
 
 	PurchaseOrderLine getPurchaseOrderLine(PurchaseOrderLinePK purchaseOrderLinePk);
 
-	void purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException;
+	Collection<PurchaseOrder> purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException;
 
-	void processDelivery(PurchaseOrder purchaseOrder);
+	PurchaseOrder processDelivery(PurchaseOrder purchaseOrder);
 }

@@ -20,7 +20,9 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="S_PURCHASE_ORDERLINE")
-	@NamedQueries(value ={@NamedQuery(name = PurchaseOrderLine.COUNT_PURCHASEORDERLINE, query = PurchaseOrderLine.COUNT_PURCHASEORDERLINE_QUERY) }
+	@NamedQueries(value ={@NamedQuery(name = PurchaseOrderLine.COUNT_PURCHASEORDERLINE, query = PurchaseOrderLine.COUNT_PURCHASEORDERLINE_QUERY),
+			@NamedQuery(name = PurchaseOrderLine.FIND_PURCHASEORDERLINE_BY_COMPONENT_ID, query = PurchaseOrderLine.FIND_PURCHASEORDERLINE_BY_COMPONENT_ID_QUERY)
+	}
 )
 public class PurchaseOrderLine implements Serializable 
 {
@@ -28,7 +30,11 @@ public class PurchaseOrderLine implements Serializable
 	
 	public static final String COUNT_PURCHASEORDERLINE = "COUNT_PURCHASEORDERLINE";
 	
+	public static final String FIND_PURCHASEORDERLINE_BY_COMPONENT_ID = "FIND_PURCHASEORDERLINE_BY_COMPONENT_ID";
+
 	public static final String COUNT_PURCHASEORDERLINE_QUERY = "SELECT COUNT(po) FROM PurchaseOrderLine po";
+	
+	public static final String FIND_PURCHASEORDERLINE_BY_COMPONENT_ID_QUERY = "SELECT pol FROM PurchaseOrderLine pol WHERE pol.partNumber = :id";
 
 	@EmbeddedId
 	@AttributeOverrides({ @AttributeOverride(name = "poNumber", column = @Column(name = "POL_PO_ID")),

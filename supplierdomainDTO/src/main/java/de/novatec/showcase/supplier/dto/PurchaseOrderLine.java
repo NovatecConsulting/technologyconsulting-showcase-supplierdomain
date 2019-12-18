@@ -1,10 +1,14 @@
 package de.novatec.showcase.supplier.dto;
 
 import java.io.Serializable;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import de.novatec.showcase.supplier.GlobalConstants;
+
 
 public class PurchaseOrderLine implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -13,6 +17,7 @@ public class PurchaseOrderLine implements Serializable {
 
 	private BigDecimal outstandingBalance;
 
+	@JsonFormat(pattern = GlobalConstants.DATE_FORMAT, locale = "de_DE")
 	private Date requestedDeliveryDate;
 
 	private int leadtime;

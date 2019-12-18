@@ -24,6 +24,17 @@ public class SupplierComponent implements Serializable {
     public SupplierComponent() {
     }
 
+	public SupplierComponent(SupplierComponentPK pk, int deliveryInDays, BigDecimal discount, BigDecimal price,
+			int quantityForDiscount, int version) {
+		super();
+		this.pk = pk;
+		this.deliveryInDays = deliveryInDays;
+		this.discount = discount;
+		this.price = price;
+		this.quantityForDiscount = quantityForDiscount;
+		this.version = version;
+	}
+
 	public SupplierComponentPK getPk() {
 		return this.pk;
 	}

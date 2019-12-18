@@ -7,17 +7,22 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import de.novatec.showcase.supplier.GlobalConstants;
 
 public class PurchaseOrder implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private int poNumber;
 
+	@JsonFormat(pattern = GlobalConstants.DATE_FORMAT, locale = "de_DE")
 	private Date sentDate;
 
 	private int siteId;
 
+	@JsonFormat(pattern = GlobalConstants.DATE_FORMAT, locale = "de_DE")
 	private Timestamp startDate;
 
 	private Integer supplierId;
@@ -26,15 +31,11 @@ public class PurchaseOrder implements Serializable {
 
 	private Collection<PurchaseOrderLine> purchaseOrderlines;
 
-    public PurchaseOrder() {
-    }
+	public PurchaseOrder() {
+	}
 
-	public PurchaseOrder( int siteId,Integer supplierId,
-			Timestamp startDate,Date sentDate,  
-			 int version)
-	{
+	public PurchaseOrder(int siteId, Integer supplierId, Timestamp startDate, int version) {
 		super();
-		this.sentDate = sentDate;
 		this.siteId = siteId;
 		this.startDate = startDate;
 		this.supplierId = supplierId;
@@ -124,5 +125,5 @@ public class PurchaseOrder implements Serializable {
 				&& Objects.equals(startDate, other.startDate) && supplierId == other.supplierId
 				&& version == other.version;
 	}
-	
+
 }

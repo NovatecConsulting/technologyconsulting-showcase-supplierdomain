@@ -3,6 +3,7 @@ package de.novatec.showcase.supplier.controller;
 import java.util.Collection;
 
 import javax.annotation.ManagedBean;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import de.novatec.showcase.manufacture.dto.ComponentDemands;
+import de.novatec.showcase.supplier.GlobalConstants;
 import de.novatec.showcase.supplier.dto.PurchaseOrder;
 import de.novatec.showcase.supplier.dto.PurchaseOrderLine;
 import de.novatec.showcase.supplier.dto.PurchaseOrderLinePK;
@@ -28,8 +30,7 @@ import de.novatec.showcase.supplier.mapper.DtoMapper;
 
 @ManagedBean
 @Path(value = "/supplier")
-//@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
-public class SupplierController {
+public class SupplierResource {
 
 	@EJB
 	private SupplierSessionLocal bean;
@@ -37,7 +38,7 @@ public class SupplierController {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-//	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
 	public Response createSupplier(Supplier supplier, @Context UriInfo uriInfo) {
 		return Response.created(uriInfo.getAbsolutePathBuilder().build())
 				.entity(DtoMapper.mapToSupplierDto(bean.createSupplier(DtoMapper.mapToSupplierEntity(supplier))))
@@ -46,6 +47,7 @@ public class SupplierController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	public Response getSupplier() {
 		Collection<Supplier> supplier = DtoMapper.mapToSupplierDto(bean.getAllSuppliers());
 		if (supplier == null) {
@@ -57,18 +59,20 @@ public class SupplierController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "{id}")
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	public Response getSupplier(@PathParam("id") Integer supplierId) {
 		Supplier supplier = DtoMapper.mapToSupplierDto(bean.getSupplier(supplierId));
 		if (supplier == null) {
-			return Response.status(Response.Status.NOT_FOUND).entity("No Supplier with id "+supplierId+" found!").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No Supplier with id " + supplierId + " found!")
+					.build();
 		}
 		return Response.ok().entity(supplier).type(MediaType.APPLICATION_JSON_TYPE).build();
 	}
-	
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-//	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
 	@Path(value = "supplier_component")
 	public Response createSupplierComponent(SupplierComponent supplierComponent, @Context UriInfo uriInfo) {
 		return Response.created(uriInfo.getAbsolutePathBuilder().build())
@@ -80,23 +84,24 @@ public class SupplierController {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-//	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.PURCHASE_ROLE_NAME})
 	@Path(value = "purchase")
 	public Response purchase(ComponentDemands componentDemands, @Context UriInfo uriInfo) {
+		Collection<PurchaseOrder> purchaseOrders;
 		try {
-			bean.purchase(componentDemands);
+			purchaseOrders = DtoMapper.mapToPurchaseOrderDto(bean.purchase(componentDemands));
 		} catch (NoValidSupplierFoundException e) {
 			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
 		}
-		return Response.ok().build();
+		return Response.created(uriInfo.getAbsolutePathBuilder().build()).entity(purchaseOrders).build();
 	}
-	
+
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-//	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.PROCESS_DELIVERY_ROLE_NAME})
 	@Path(value = "process_delivery/{poNumber}")
-	public Response purchase(@PathParam("poNumber")Integer poNumber, @Context UriInfo uriInfo) {
+	public Response processDelivery(@PathParam("poNumber") Integer poNumber, @Context UriInfo uriInfo) {
 		PurchaseOrder purchaseOrder = DtoMapper.mapToPurchaseOrderDto(bean.getPurchaseOrder(poNumber));
 		if (purchaseOrder == null) {
 			return Response.status(Response.Status.NOT_FOUND)
@@ -105,11 +110,11 @@ public class SupplierController {
 		bean.processDelivery(DtoMapper.mapToPurchaseOrderEntity(purchaseOrder));
 		return Response.ok().build();
 	}
-	
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "purchase_order")
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	public Response getPurchaseOrder() {
 		Collection<PurchaseOrder> purchaseOrders = DtoMapper.mapToPurchaseOrderDto(bean.getAllPurchaseOrders());
 		if (purchaseOrders == null) {
@@ -121,6 +126,7 @@ public class SupplierController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "purchase_order/{poNumber}")
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	public Response getPurchaseOrder(@PathParam("poNumber") Integer poNumber) {
 		PurchaseOrder purchaseOrder = DtoMapper.mapToPurchaseOrderDto(bean.getPurchaseOrder(poNumber));
 		if (purchaseOrder == null) {
@@ -133,39 +139,46 @@ public class SupplierController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "purchase_order_line/{poNumber}/{polNumber}")
-	public Response getPurchaseOrder(@PathParam("poNumber") Integer poNumber, @PathParam("polNumber") Integer polNumber) {
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
+	public Response getPurchaseOrder(@PathParam("poNumber") Integer poNumber,
+			@PathParam("polNumber") Integer polNumber) {
 		PurchaseOrderLinePK purchaseorderLinePk = new PurchaseOrderLinePK(polNumber, poNumber);
-		PurchaseOrderLine purchaseOrderLine = DtoMapper.mapToPurchaseOrderLineDto(bean.getPurchaseOrderLine(DtoMapper.mapToPurchaseOrderLinePKEntity(purchaseorderLinePk)));
+		PurchaseOrderLine purchaseOrderLine = DtoMapper.mapToPurchaseOrderLineDto(
+				bean.getPurchaseOrderLine(DtoMapper.mapToPurchaseOrderLinePKEntity(purchaseorderLinePk)));
 		if (purchaseOrderLine == null) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity("PurchaseOrderLine with poNumber " + poNumber + " and polNumber " + polNumber + " not found!").build();
+			return Response.status(Response.Status.NOT_FOUND).entity(
+					"PurchaseOrderLine with poNumber " + poNumber + " and polNumber " + polNumber + " not found!")
+					.build();
 		}
 		return Response.ok().entity(purchaseOrderLine).type(MediaType.APPLICATION_JSON_TYPE).build();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "supplier_component")
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	public Response getSupplierComponent() {
-		Collection<SupplierComponent> supplierComponents = DtoMapper.mapToSupplierComponentDto(bean.getAllSupplierComponents());
+		Collection<SupplierComponent> supplierComponents = DtoMapper
+				.mapToSupplierComponentDto(bean.getAllSupplierComponents());
 		if (supplierComponents == null) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity("No SupplierComponent found!").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No SupplierComponent found!").build();
 		}
 		return Response.ok().entity(supplierComponents).type(MediaType.APPLICATION_JSON_TYPE).build();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "supplier_component/{supplierId}/{componentId}")
-	public Response getSupplierComponent(@PathParam("supplierId") Integer supplierId, @PathParam("componentId") String componentId) {
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
+	public Response getSupplierComponent(@PathParam("supplierId") Integer supplierId,
+			@PathParam("componentId") String componentId) {
 		SupplierComponentPK supplierComponentPK = new SupplierComponentPK();
 		supplierComponentPK.setComponentId(componentId);
 		supplierComponentPK.setSupplierId(supplierId);
-		SupplierComponent supplierComponent = DtoMapper.mapToSupplierComponentDto(bean.getSupplierComponent(DtoMapper.mapToSupplierComponentPKEntity(supplierComponentPK)));
+		SupplierComponent supplierComponent = DtoMapper.mapToSupplierComponentDto(
+				bean.getSupplierComponent(DtoMapper.mapToSupplierComponentPKEntity(supplierComponentPK)));
 		if (supplierComponent == null) {
-			return Response.status(Response.Status.NOT_FOUND)
-					.entity("No SupplierComponent found!").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No SupplierComponent found!").build();
 		}
 		return Response.ok().entity(supplierComponent).type(MediaType.APPLICATION_JSON_TYPE).build();
 	}

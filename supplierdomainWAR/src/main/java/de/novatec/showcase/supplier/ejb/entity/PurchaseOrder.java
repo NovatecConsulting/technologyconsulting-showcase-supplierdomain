@@ -59,9 +59,9 @@ public class PurchaseOrder implements Serializable {
 		super();
 	}
 
-	public PurchaseOrder(int siteId, Integer supplierId, Timestamp startDate, Date sentDate, int version) {
+	public PurchaseOrder(int siteId, Integer supplierId, Timestamp startDate, 
+			int version) {
 		super();
-		this.sentDate = sentDate;
 		this.siteId = siteId;
 		this.startDate = startDate;
 		this.supplierId = supplierId;

@@ -15,6 +15,13 @@ public class SupplierComponentPK implements Serializable {
 
     public SupplierComponentPK() {
     }
+    
+	public SupplierComponentPK(String componentId, int supplierId) {
+		super();
+		this.componentId = componentId;
+		this.supplierId = supplierId;
+	}
+
 	public String getComponentId() {
 		return this.componentId;
 	}

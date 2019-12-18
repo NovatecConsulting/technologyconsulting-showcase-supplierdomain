@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,15 +40,15 @@ public class SupplierSession implements SupplierSessionLocal {
 	@PersistenceContext
 	private EntityManager em;
 
-	private Supplier findSupplier(ComponentDemand demand) throws NoValidSupplierFoundException {
+	private Supplier findSupplier(ComponentDemand componentDemand) throws NoValidSupplierFoundException {
 		TypedQuery<SupplierComponent> query = em.createNamedQuery(SupplierComponent.FIND_SUPPCOMPONENT_BY_COMPONENT_ID,
 				SupplierComponent.class);
-		query.setParameter("id", demand.getComponentId());
+		query.setParameter("id", componentDemand.getComponentId());
 		List<SupplierComponent> supplierComponents = query.getResultList();
 		
 		if(supplierComponents.isEmpty())
 		{
-			throw new NoValidSupplierFoundException("No valid Supplier found for " + demand + "!");
+			throw new NoValidSupplierFoundException("No valid Supplier found for " + componentDemand + "!");
 		}
 		else
 		{
@@ -54,9 +56,20 @@ public class SupplierSession implements SupplierSessionLocal {
 				return em.find(Supplier.class, supplierComponents.get(0).getPk().getSupplierId());
 			}
 
-			SupplierComponent supplierComponent = null;
+			// Sort by price
+			supplierComponents.sort(new Comparator<SupplierComponent>() {
+
+				@Override
+				public int compare(SupplierComponent o1, SupplierComponent o2) {
+					return o1.getPrice().compareTo(o2.getPrice());
+				}
+			});
+
+			// init with lowest price
+			SupplierComponent supplierComponent = supplierComponents.get(0);
+			// check if we can get an discount
 			for (SupplierComponent currentSupplierComponent : supplierComponents) {
-				if (demand.getQuantity() > currentSupplierComponent.getQuantityForDiscount()) {
+				if (componentDemand.getQuantity() > currentSupplierComponent.getQuantityForDiscount()) {
 					if (supplierComponent == null
 							|| currentSupplierComponent.getDiscount().compareTo(supplierComponent.getDiscount()) > 0) {
 						supplierComponent = currentSupplierComponent;
@@ -152,7 +165,6 @@ public class SupplierSession implements SupplierSessionLocal {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Supplier createSupplier(Supplier supplier) {
 		em.persist(supplier);
-		em.flush();
 		return supplier;
 	}
 
@@ -163,7 +175,7 @@ public class SupplierSession implements SupplierSessionLocal {
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException {
+	public Collection<PurchaseOrder> purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException {
 
 		Map<Integer, PurchaseOrder> purchaseOrders = new HashMap<Integer, PurchaseOrder>();
 
@@ -176,15 +188,13 @@ public class SupplierSession implements SupplierSessionLocal {
 				em.persist(purchaseOrder);
 			}
 			purchaseOrder = purchaseOrders.get(supplier.getId());
-			TypedQuery<SupplierComponent> query = em
-					.createNamedQuery(SupplierComponent.FIND_SUPPCOMPONENT_BY_SC_SUPP_ID, SupplierComponent.class);
-			query.setParameter("id", purchaseOrder.getSupplierId());
-			SupplierComponent supplierComponent = query.getSingleResult();
+			SupplierComponent supplierComponent = em.find(SupplierComponent.class, new SupplierComponentPK(componentDemand.getComponentId(), supplier.getId()));
 			PurchaseOrderLine purchaseOrderLine = createPurchaseOrderLine(purchaseOrder, supplierComponent,
 					componentDemand);
 			purchaseOrder.addPurchaseOrderLine(purchaseOrderLine);
 			em.persist(purchaseOrderLine);
 		}
+		return purchaseOrders.values();
 	}
 
 	private PurchaseOrder createPurchaseOrder(Supplier supplier) {
@@ -199,7 +209,7 @@ public class SupplierSession implements SupplierSessionLocal {
 
 		PurchaseOrder purchaseOrder = new PurchaseOrder(RandomTypes.getInt(1, 100), supplier.getId(),
 				new java.sql.Timestamp((RandomTypes.getDate(from, to)).getTimeInMillis()),
-				new java.sql.Date((RandomTypes.getDate(from, to)).getTimeInMillis()), 0);
+				0);
 		return purchaseOrder;
 	}
 
@@ -207,18 +217,21 @@ public class SupplierSession implements SupplierSessionLocal {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public SupplierComponent createSupplierComponent(SupplierComponent supplierComponent) {
 		em.persist(supplierComponent);
-		em.flush();
 		return supplierComponent;
 	}
 
 	@Override
-	public void processDelivery(PurchaseOrder purchaseOrder) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public PurchaseOrder processDelivery(PurchaseOrder purchaseOrder) {
 		List<ComponentDemand> componentDemands = new ArrayList<ComponentDemand>();
 		for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderlines()) {
 			componentDemands.add(new ComponentDemand(purchaseOrderLine.getPartNumber(),
 					purchaseOrderLine.getOrderedQuantity(), purchaseOrderLine.getDeliveryLocation()));
 		}
+		purchaseOrder.setSentDate(Calendar.getInstance().getTime());
+		purchaseOrder = em.merge(purchaseOrder);
 		log.info(
 				"TODO: SupplierSession.processDelivery(PurchaseOrder) should implement sending of ComponentDemands to manufacturedomain purchase method");
+		return purchaseOrder;
 	}
 }
