@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +19,11 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.novatec.showcase.manufacture.GlobalConstants;
 import de.novatec.showcase.manufacture.dto.ComponentDemand;
 import de.novatec.showcase.manufacture.dto.ComponentDemands;
+import de.novatec.showcase.supplier.client.manufacture.ComponentDemandDeliverer;
+import de.novatec.showcase.supplier.client.manufacture.RestcallException;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrder;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLine;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLinePK;
@@ -39,6 +41,8 @@ public class SupplierSession implements SupplierSessionLocal {
 
 	@PersistenceContext
 	private EntityManager em;
+	
+	private ComponentDemandDeliverer componentDemandDeliverer = new ComponentDemandDeliverer();
 
 	private Supplier findSupplier(ComponentDemand componentDemand) throws NoValidSupplierFoundException {
 		TypedQuery<SupplierComponent> query = em.createNamedQuery(SupplierComponent.FIND_SUPPCOMPONENT_BY_COMPONENT_ID,
@@ -222,7 +226,7 @@ public class SupplierSession implements SupplierSessionLocal {
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public PurchaseOrder processDelivery(PurchaseOrder purchaseOrder) {
+	public PurchaseOrder processDelivery(PurchaseOrder purchaseOrder) throws RestcallException {
 		List<ComponentDemand> componentDemands = new ArrayList<ComponentDemand>();
 		for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderlines()) {
 			componentDemands.add(new ComponentDemand(purchaseOrderLine.getPartNumber(),
@@ -230,8 +234,14 @@ public class SupplierSession implements SupplierSessionLocal {
 		}
 		purchaseOrder.setSentDate(Calendar.getInstance().getTime());
 		purchaseOrder = em.merge(purchaseOrder);
-		log.info(
-				"TODO: SupplierSession.processDelivery(PurchaseOrder) should implement sending of ComponentDemands to manufacturedomain purchase method");
+		if(!GlobalConstants.IS_SINGLE_EAR_DEPLOYMENT)
+		{
+			componentDemandDeliverer.deliver(componentDemands);
+		}
+		else
+		{
+			log.info("SupplierdomainEAR is deployed as a single EAR -> calls to manufatcuredomain.deliver are ignored!");
+		}
 		return purchaseOrder;
 	}
 }

@@ -1,0 +1,16 @@
+{
+	"contact": "contact",
+	"name": "Supplier 3",
+	"replyUrl": "http://localhost:9080/reply",
+	"version": 0,
+	"wsUrl": "http://localhost:9080/ws",
+	"address": {
+		"street1": "street1",
+		"street2": "street2",
+		"city": "city",
+		"state": "state",
+		"country": "country",
+		"zip": "zip",
+		"phone": "0102020203"
+	}
+}

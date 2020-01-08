@@ -18,6 +18,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.novatec.showcase.manufacture.dto.ComponentDemands;
 import de.novatec.showcase.supplier.GlobalConstants;
+import de.novatec.showcase.supplier.client.manufacture.RestcallException;
 import de.novatec.showcase.supplier.dto.PurchaseOrder;
 import de.novatec.showcase.supplier.dto.PurchaseOrderLine;
 import de.novatec.showcase.supplier.dto.PurchaseOrderLinePK;
@@ -107,7 +108,12 @@ public class SupplierResource {
 			return Response.status(Response.Status.NOT_FOUND)
 					.entity("PurchaseOrder with poNumber " + poNumber + " not found!").build();
 		}
-		bean.processDelivery(DtoMapper.mapToPurchaseOrderEntity(purchaseOrder));
+		try {
+			bean.processDelivery(DtoMapper.mapToPurchaseOrderEntity(purchaseOrder));
+		} catch (RestcallException e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity(e.getMessage()).build();
+		}
 		return Response.ok().build();
 	}
 

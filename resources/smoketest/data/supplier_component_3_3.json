@@ -1,0 +1,11 @@
+{
+	"pk": {
+		"supplierId": 3,
+		"componentId": "3"
+	},
+	"deliveryInDays": 1,
+	"discount": 5.0,
+	"price": 102.0,
+	"quantityForDiscount": 5,
+	"version": 0
+}
