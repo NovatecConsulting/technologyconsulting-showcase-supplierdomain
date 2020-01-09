@@ -5,11 +5,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import de.novatec.showcase.supplier.GlobalConstants;
 
-
+@Schema(name="PurchaseOrderLine", description="POJO that represents a purchase order line.")
 public class PurchaseOrderLine implements Serializable {
 	private static final long serialVersionUID = 1L;
 

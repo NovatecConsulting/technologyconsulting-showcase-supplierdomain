@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+@Schema(name="SupplierComponent", description="POJO that represents a supplier component.")
 public class SupplierComponent implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -3,12 +3,17 @@ package de.novatec.showcase.supplier.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+@Schema(name="SupplierComponentPK", description="POJO that represents a supplier component primary key.")
 public class SupplierComponentPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Schema(required=true)
 	private String componentId;
 
+	@Schema(required=true)
 	private int supplierId;
 
 	public SupplierComponentPK() {
