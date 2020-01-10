@@ -84,13 +84,13 @@ public class SupplierResource {
 	                content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
 	                responseCode = "200",
-	                description = "The Supplier with the given id.",
+	                description = "The available Suppliers.",
 	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
 	                schema = @Schema(type = SchemaType.ARRAY, implementation = Supplier.class))) })
 	    @Operation(
 	        summary = "Get the suppliers",
 	        description = "Get the available suppliers.")
-	public Response getSupplier() {
+	public Response getSuppliers() {
 		Collection<Supplier> supplier = DtoMapper.mapToSupplierDto(bean.getAllSuppliers());
 		if (supplier == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity("No Supplier found!").type(MediaType.TEXT_PLAIN_TYPE).build();
@@ -267,7 +267,7 @@ public class SupplierResource {
 	    @Operation(
 	        summary = "Get the purchase orders",
 	        description = "Get the available purchase orders.")
-	public Response getPurchaseOrder() {
+	public Response getPurchaseOrders() {
 		Collection<PurchaseOrder> purchaseOrders = DtoMapper.mapToPurchaseOrderDto(bean.getAllPurchaseOrders());
 		if (purchaseOrders == null) {
 			return Response.status(Response.Status.NOT_FOUND).entity("No PurchaseOrder found!").build();
@@ -379,7 +379,7 @@ public class SupplierResource {
 	    @Operation(
 	        summary = "Get the SupplierComponent",
 	        description = "Get the available SupplierComponents.")
-	public Response getSupplierComponent() {
+	public Response getSupplierComponents() {
 		Collection<SupplierComponent> supplierComponents = DtoMapper
 				.mapToSupplierComponentDto(bean.getAllSupplierComponents());
 		if (supplierComponents == null) {
