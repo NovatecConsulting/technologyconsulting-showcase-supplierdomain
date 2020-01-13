@@ -2,7 +2,7 @@
 
 java -Dmockserver.initializationJsonPath=./data/init_expectations.json -jar ./lib/mockserver-netty-5.8.1-jar-with-dependencies.jar -serverPort 9090 -logLevel ERROR &
 #wait while mockserver is staring
-sleep 5
+sleep 1
 
 curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_1.json http://localhost:9080/supplierdomain/supplier
 curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_2.json http://localhost:9080/supplierdomain/supplier
