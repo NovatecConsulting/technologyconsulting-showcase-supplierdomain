@@ -24,6 +24,8 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
 import de.novatec.showcase.manufacture.dto.ComponentDemands;
 import de.novatec.showcase.supplier.GlobalConstants;
@@ -40,6 +42,7 @@ import de.novatec.showcase.supplier.mapper.DtoMapper;
 
 @ManagedBean
 @Path(value = "/supplier")
+@Tags(value= {@Tag(name = "Supplier")})
 public class SupplierResource {
 
 	@EJB
@@ -143,6 +146,7 @@ public class SupplierResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
 	@Path(value = "supplier_component")
+	@Tags(value= {@Tag(name = "SupplierComponent")})
 	@APIResponses(
 	        value = {
 	            @APIResponse(
@@ -224,7 +228,7 @@ public class SupplierResource {
 	                responseCode = "200",
 	                description = "The purchase order is delivered.",
 	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(implementation = Supplier.class))) })
+	                schema = @Schema(implementation = PurchaseOrder.class))) })
 	    @Operation(
 	        summary = "Process delivery",
 	        description = "Process delivery with poNumber.")
@@ -252,6 +256,7 @@ public class SupplierResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "purchase_order")
+	@Tags(value= {@Tag(name = "PurchaseOrder")})
 	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	@APIResponses(
 	        value = {
@@ -263,7 +268,7 @@ public class SupplierResource {
 	                responseCode = "200",
 	                description = "The available PurchaseOrders.",
 	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(implementation = Supplier.class))) })
+	                schema = @Schema(implementation = PurchaseOrder.class))) })
 	    @Operation(
 	        summary = "Get the purchase orders",
 	        description = "Get the available purchase orders.")
@@ -278,6 +283,7 @@ public class SupplierResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "purchase_order/{poNumber}")
+	@Tags(value= {@Tag(name = "PurchaseOrder")})
 	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	@APIResponses(
 	        value = {
@@ -293,7 +299,7 @@ public class SupplierResource {
 	                responseCode = "200",
 	                description = "The PurchaseOrder with the given id.",
 	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(implementation = Supplier.class))) })
+	                schema = @Schema(implementation = PurchaseOrder.class))) })
 	    @Operation(
 	        summary = "Get the PurchaseOrder by id",
 	        description = "Get the PurchaseOrder by id where the id has to be higher than 0.")
@@ -315,6 +321,7 @@ public class SupplierResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "purchase_order_line/{poNumber}/{polNumber}")
+	@Tags(value= {@Tag(name = "PurchaseOrderLine")})
 	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	@APIResponses(
 	        value = {
@@ -330,7 +337,7 @@ public class SupplierResource {
 	                responseCode = "200",
 	                description = "The PurchaseOrderline with the given polNumber and poNumber.",
 	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(implementation = Supplier.class))) })
+	                schema = @Schema(implementation = PurchaseOrderLine.class))) })
 	    @Operation(
 	        summary = "Get the PurchaseOrderLine by poNumber and polNumber",
 	        description = "Get the PurchaseOrderLine by poNumber/polNumber where the poNumber/polNumber has to be higher than 0.")
@@ -364,6 +371,7 @@ public class SupplierResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "supplier_component")
+	@Tags(value= {@Tag(name = "SupplierComponent")})
 	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	@APIResponses(
 	        value = {
@@ -375,7 +383,7 @@ public class SupplierResource {
 	                responseCode = "200",
 	                description = "The SupplierComponents.",
 	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(type = SchemaType.ARRAY, implementation = Supplier.class))) })
+	                schema = @Schema(type = SchemaType.ARRAY, implementation = SupplierComponent.class))) })
 	    @Operation(
 	        summary = "Get the SupplierComponent",
 	        description = "Get the available SupplierComponents.")
@@ -391,6 +399,7 @@ public class SupplierResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path(value = "supplier_component/{supplierId}/{componentId}")
+	@Tags(value= {@Tag(name = "SupplierComponent")})
 	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME, GlobalConstants.SUPPLIER_READ_ROLE_NAME})
 	@APIResponses(
 	        value = {
@@ -406,7 +415,7 @@ public class SupplierResource {
 	                responseCode = "200",
 	                description = "The SupplierComponent with the given supplierId and componentId.",
 	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(implementation = Supplier.class))) })
+	                schema = @Schema(implementation = SupplierComponent.class))) })
 	    @Operation(
 	        summary = "Get the SupplierComponent by supplierId and polNumber",
 	        description = "Get the SupplierComponent by supplierId/componentId where the supplierId/componentId has to be higher than 0.")
