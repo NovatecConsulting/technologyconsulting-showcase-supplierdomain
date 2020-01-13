@@ -19,7 +19,6 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.novatec.showcase.manufacture.GlobalConstants;
 import de.novatec.showcase.manufacture.dto.ComponentDemand;
 import de.novatec.showcase.manufacture.dto.ComponentDemands;
 import de.novatec.showcase.supplier.client.manufacture.ComponentDemandDeliverer;
@@ -234,14 +233,7 @@ public class SupplierSession implements SupplierSessionLocal {
 		}
 		purchaseOrder.setSentDate(Calendar.getInstance().getTime());
 		purchaseOrder = em.merge(purchaseOrder);
-		if(!GlobalConstants.IS_SINGLE_EAR_DEPLOYMENT)
-		{
-			componentDemandDeliverer.deliver(componentDemands);
-		}
-		else
-		{
-			log.info("SupplierdomainEAR is deployed as a single EAR -> calls to manufatcuredomain.deliver are ignored!");
-		}
+		componentDemandDeliverer.deliver(componentDemands);
 		return purchaseOrder;
 	}
 }

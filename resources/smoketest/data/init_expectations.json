@@ -1,0 +1,16 @@
+[ 
+	{
+	  "httpRequest" : {
+	    "method" : "POST",
+	    "path" : "/manufacturedomain/component/deliver/"
+	  },
+	  "times" : {
+	    "unlimited" : true
+	  },
+	  "timeToLive" : {
+	    "unlimited" : true
+	  },
+	  "httpResponse" : {
+	    "statusCode" : 200
+	  }
+	} ]

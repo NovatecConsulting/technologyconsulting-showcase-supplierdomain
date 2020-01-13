@@ -20,7 +20,13 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.mockserver.client.MockServerClient;
+import org.mockserver.junit.MockServerRule;
+import org.mockserver.model.HttpRequest;
+import org.mockserver.model.HttpResponse;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
@@ -28,6 +34,7 @@ import de.novatec.showcase.supplier.dto.Address;
 import de.novatec.showcase.supplier.dto.Supplier;
 import de.novatec.showcase.supplier.dto.SupplierComponent;
 import de.novatec.showcase.supplier.dto.SupplierComponentPK;
+import io.netty.handler.codec.http.HttpMethod;
 
 public abstract class ResourceItBase {
 	protected static final String PORT = System.getProperty("http.port");
@@ -76,6 +83,11 @@ public abstract class ResourceItBase {
 	protected static Map<String, Supplier> dbSuppliers = new HashMap<String, Supplier>();
 	protected static Map<SupplierComponentPK, SupplierComponent> dbSupplierComponents = new HashMap<SupplierComponentPK, SupplierComponent>();
 
+	@Rule
+	public MockServerRule mockServerRule = new MockServerRule(this, Integer.valueOf(System.getProperty("http.port.manufacture")));
+
+	protected MockServerClient mockServerClient;
+	
 	@BeforeClass
 	public static void beforeClass() {
 		client = ClientBuilder.newClient();
@@ -88,6 +100,20 @@ public abstract class ResourceItBase {
 	@AfterClass
 	public static void teardown() {
 		client.close();
+	}
+
+	@Before
+	public void before()
+	{
+		mockServerClient.when(
+				new HttpRequest()
+	            .withMethod(HttpMethod.POST.toString())
+	            .withPath("/manufacturedomain/component/deliver/")
+	    )
+	    .respond(
+	        new HttpResponse()
+	        	.withStatusCode(Response.Status.OK.getStatusCode())
+	    );
 	}
 
 	private static void setup() {

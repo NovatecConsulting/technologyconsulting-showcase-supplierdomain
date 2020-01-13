@@ -18,11 +18,10 @@ import de.novatec.showcase.manufacture.dto.ComponentDemand;
 
 public class ComponentDemandDeliverer {
 
-	private static final String PORT = System.getProperty("http.port");
+	private static final String PORT = System.getProperty("http.port.manufacture");
 	private static final String BASE_URL = "http://localhost:" + PORT + "/manufacturedomain/";
 
-	private static final String MANUFACTURE_URL = BASE_URL + "manufacture/";
-	private static final String COMPONENT_URL = MANUFACTURE_URL + "component/";
+	private static final String COMPONENT_URL = BASE_URL + "component/";
 	private static final String DELIVER_URL = COMPONENT_URL + "deliver/";
 	private Client client;
 
@@ -35,7 +34,7 @@ public class ComponentDemandDeliverer {
 
 	public void deliver(Collection<ComponentDemand> componentDemands) throws RestcallException {
 		WebTarget target = client.target(DELIVER_URL);
-		Builder builder = target.path("/deliver").request(MediaType.APPLICATION_JSON);
+		Builder builder = target.request(MediaType.APPLICATION_JSON);
 		Response response = asAdmin(builder.accept(MediaType.APPLICATION_JSON_TYPE))
 				.post(Entity.json(componentDemands));
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {

@@ -22,6 +22,7 @@
 		<!-- Liberty configuration -->
 		<liberty.var.default.http.port>9080</liberty.var.default.http.port>
 		<liberty.var.default.https.port>9443</liberty.var.default.https.port>
+		<http.port.manufacture>9090</http.port.manufacture>
 
 	</properties>
 
@@ -82,6 +83,21 @@
 			<version>2.29.1</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.mock-server</groupId>
+			<artifactId>mockserver-netty</artifactId>
+			<version>5.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -124,7 +140,7 @@
 						<default.http.port>${liberty.var.default.http.port}</default.http.port>
 						<default.https.port>${liberty.var.default.https.port}</default.https.port>
 						<app.context.root>supplierdomain</app.context.root>
-						<isSingleEarDeployment>true</isSingleEarDeployment>
+						<http.port.manufacture>${http.port.manufacture}</http.port.manufacture>
 					</bootstrapProperties>
 				</configuration>
 				<executions>
@@ -149,6 +165,7 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>copy h2 library for open liberty</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy</goal>
@@ -160,6 +177,25 @@
 									<groupId>com.h2database</groupId>
 									<artifactId>h2</artifactId>
 									<version>1.4.200</version>
+									<type>jar</type>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy mockserver with dependencies to smoketest/lib folder</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>../resources/smoketest/lib</outputDirectory>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.mock-server</groupId>
+									<artifactId>mockserver-netty</artifactId>
+									<classifier>jar-with-dependencies</classifier>
+									<version>5.8.1</version>
 									<type>jar</type>
 								</artifactItem>
 							</artifactItems>
@@ -190,6 +226,7 @@
 					<systemPropertyVariables>
 						<https.port>${liberty.var.default.https.port}</https.port>
 						<http.port>${liberty.var.default.http.port}</http.port>
+						<http.port.manufacture>${http.port.manufacture}</http.port.manufacture>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>

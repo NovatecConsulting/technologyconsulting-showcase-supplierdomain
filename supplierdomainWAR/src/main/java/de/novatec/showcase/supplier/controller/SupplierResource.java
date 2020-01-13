@@ -226,8 +226,8 @@ public class SupplierResource {
 	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
 	                schema = @Schema(implementation = Supplier.class))) })
 	    @Operation(
-	        summary = "Get the supplier by id",
-	        description = "Get the supplier by id where the id has to be higher than 0.")
+	        summary = "Process delivery",
+	        description = "Process delivery with poNumber.")
 	public Response processDelivery(
 			@Parameter(
 		            description = "The purchase order number of the PurchaseOrder.",
@@ -238,13 +238,13 @@ public class SupplierResource {
 		PurchaseOrder purchaseOrder = DtoMapper.mapToPurchaseOrderDto(bean.getPurchaseOrder(poNumber));
 		if (purchaseOrder == null) {
 			return Response.status(Response.Status.NOT_FOUND)
-					.entity("PurchaseOrder with poNumber " + poNumber + " not found!").build();
+					.entity("PurchaseOrder with poNumber " + poNumber + " not found!").type(MediaType.TEXT_PLAIN).build();
 		}
 		try {
 			bean.processDelivery(DtoMapper.mapToPurchaseOrderEntity(purchaseOrder));
 		} catch (RestcallException e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity(e.getMessage()).build();
+					.entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
 		}
 		return Response.ok().build();
 	}
