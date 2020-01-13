@@ -233,7 +233,13 @@ public class SupplierSession implements SupplierSessionLocal {
 		}
 		purchaseOrder.setSentDate(Calendar.getInstance().getTime());
 		purchaseOrder = em.merge(purchaseOrder);
-		componentDemandDeliverer.deliver(componentDemands);
+		try {
+			componentDemandDeliverer.deliver(componentDemands);
+		} catch (RestcallException e) {
+			log.error(e.getMessage());
+			throw e;
+		}
+		
 		return purchaseOrder;
 	}
 }
