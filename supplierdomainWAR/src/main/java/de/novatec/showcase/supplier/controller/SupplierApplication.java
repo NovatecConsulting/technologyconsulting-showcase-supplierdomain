@@ -14,7 +14,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
 @SecuritySchemes({
 	@SecurityScheme(securitySchemeName = "supplierDomainHttp",type = SecuritySchemeType.HTTP, scheme = "basic")
 })
-@OpenAPIDefinition(info = @Info(title = "The manufacture domains api.", version ="1.0"), security = {@SecurityRequirement(name = "supplierDomainHttp")})
+@OpenAPIDefinition(info = @Info(title = "The supplier domains api.", version ="1.0"), security = {@SecurityRequirement(name = "supplierDomainHttp")})
 public class SupplierApplication extends Application {
 
 }
