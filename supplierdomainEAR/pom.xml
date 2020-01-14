@@ -23,6 +23,8 @@
 		<liberty.var.default.http.port>9080</liberty.var.default.http.port>
 		<liberty.var.default.https.port>9443</liberty.var.default.https.port>
 		<http.port.manufacture>9090</http.port.manufacture>
+		<username.manufacture>admin</username.manufacture>
+		<password.manufacture>adminpwd</password.manufacture>
 
 	</properties>
 
@@ -138,6 +140,8 @@
 						<default.http.port>${liberty.var.default.http.port}</default.http.port>
 						<default.https.port>${liberty.var.default.https.port}</default.https.port>
 						<http.port.manufacture>${http.port.manufacture}</http.port.manufacture>
+						<username.manufacture>${username.manufacture}</username.manufacture>
+						<password.manufacture>${password.manufacture}</password.manufacture>
 					</bootstrapProperties>
 				</configuration>
 				<executions>
@@ -224,6 +228,8 @@
 						<https.port>${liberty.var.default.https.port}</https.port>
 						<http.port>${liberty.var.default.http.port}</http.port>
 						<http.port.manufacture>${http.port.manufacture}</http.port.manufacture>
+						<username.manufacture>${username.manufacture}</username.manufacture>
+						<password.manufacture>${password.manufacture}</password.manufacture>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>

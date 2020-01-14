@@ -1,6 +1,6 @@
 package de.novatec.showcase.supplier.client.manufacture;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,9 +15,12 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import de.novatec.showcase.manufacture.dto.ComponentDemand;
+import de.novatec.showcase.manufacture.dto.ComponentDemands;
 
 public class ComponentDemandDeliverer {
 
+	private static final String USERNAME = System.getProperty("username.manufacture");
+	private static final String PASSWORD = System.getProperty("password.manufacture");
 	private static final String PORT = System.getProperty("http.port.manufacture");
 	private static final String BASE_URL = "http://localhost:" + PORT + "/manufacturedomain/";
 
@@ -32,20 +35,19 @@ public class ComponentDemandDeliverer {
 		client.register(feature);
 	}
 
-	public void deliver(Collection<ComponentDemand> componentDemands) throws RestcallException {
+	public void deliver(List<ComponentDemand> componentDemands) throws RestcallException {
 		WebTarget target = client.target(DELIVER_URL);
-		Builder builder = target.request(MediaType.APPLICATION_JSON);
-		Response response = asAdmin(builder.accept(MediaType.APPLICATION_JSON_TYPE))
-				.post(Entity.json(componentDemands));
+		Response response = asAdmin(target.request(MediaType.APPLICATION_JSON_TYPE))
+				.post(Entity.json(new ComponentDemands().setComponentDemands(componentDemands)));
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {
 			return;
 		}
 		throw new RestcallException(
-				"Error " + Response.Status.fromStatusCode(response.getStatus()) + " while calling " + DELIVER_URL + " with " + componentDemands);
+				"Http Status " + Response.Status.fromStatusCode(response.getStatus()) + " while calling " + DELIVER_URL + " with " + componentDemands + ". " + response.readEntity(String.class));
 	}
 
 	private static Builder asAdmin(Builder builder) {
-		return asUser(builder, "admin", "adminpwd");
+		return asUser(builder, USERNAME, PASSWORD);
 	}
 
 	private static Builder asUser(Builder builder, String userName, String password) {
