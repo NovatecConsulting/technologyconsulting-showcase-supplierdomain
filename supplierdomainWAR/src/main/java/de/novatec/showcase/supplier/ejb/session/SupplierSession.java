@@ -33,7 +33,7 @@ import de.novatec.showcase.supplier.ejb.entity.SupplierComponentPK;
 import de.novatec.showcase.supplier.util.RandomTypes;;
 
 @Stateless
-@TransactionAttribute(javax.ejb.TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.NEVER)
 public class SupplierSession implements SupplierSessionLocal {
 
 	private static Logger log = LoggerFactory.getLogger(SupplierSession.class);
@@ -127,6 +127,7 @@ public class SupplierSession implements SupplierSessionLocal {
 	}
 
 	private int getNextPolNumber() {
+		//TOD refactor!
 		TypedQuery<Long> query = em.createNamedQuery(PurchaseOrderLine.COUNT_PURCHASEORDERLINE, Long.class);
 		int nextPolNumber = query.getSingleResult().intValue();
 		return ++nextPolNumber;
@@ -165,7 +166,7 @@ public class SupplierSession implements SupplierSessionLocal {
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Supplier createSupplier(Supplier supplier) {
 		em.persist(supplier);
 		return supplier;
@@ -177,7 +178,7 @@ public class SupplierSession implements SupplierSessionLocal {
 	 * not processed ComponentDemands without Supplier, so that the caller can decide what to do with the not processed
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Collection<PurchaseOrder> purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException {
 
 		Map<Integer, PurchaseOrder> purchaseOrders = new HashMap<Integer, PurchaseOrder>();
@@ -217,14 +218,14 @@ public class SupplierSession implements SupplierSessionLocal {
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public SupplierComponent createSupplierComponent(SupplierComponent supplierComponent) {
 		em.persist(supplierComponent);
 		return supplierComponent;
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public PurchaseOrder processDelivery(PurchaseOrder purchaseOrder) throws RestcallException {
 		List<ComponentDemand> componentDemands = new ArrayList<ComponentDemand>();
 		for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderlines()) {
