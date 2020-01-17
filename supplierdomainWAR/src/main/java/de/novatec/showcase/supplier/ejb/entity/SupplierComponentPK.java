@@ -1,22 +1,20 @@
 package de.novatec.showcase.supplier.ejb.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
 public class SupplierComponentPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String componentId;
 
-	private int supplierId;
+	private Integer supplierId;
 
     public SupplierComponentPK() {
     }
     
-	public SupplierComponentPK(String componentId, int supplierId) {
+	public SupplierComponentPK(String componentId, Integer supplierId) {
 		super();
 		this.componentId = componentId;
 		this.supplierId = supplierId;
@@ -28,33 +26,33 @@ public class SupplierComponentPK implements Serializable {
 	public void setComponentId(String componentId) {
 		this.componentId = componentId;
 	}
-	public int getSupplierId() {
+	public Integer getSupplierId() {
 		return this.supplierId;
 	}
-	public void setSupplierId(int supplierId) {
+	public void setSupplierId(Integer supplierId) {
 		this.supplierId = supplierId;
 	}
 
-	public boolean equals(Object other) {
-		if (this == other) {
+	@Override
+	public int hashCode() {
+		return Objects.hash(componentId, supplierId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (!(other instanceof SupplierComponentPK)) {
+		if (!(obj instanceof SupplierComponentPK)) {
 			return false;
 		}
-		SupplierComponentPK castOther = (SupplierComponentPK)other;
-		return 
-			this.componentId.equals(castOther.componentId)
-			&& (this.supplierId == castOther.supplierId);
+		SupplierComponentPK other = (SupplierComponentPK) obj;
+		return Objects.equals(componentId, other.componentId) && Objects.equals(supplierId, other.supplierId);
+	}
 
-    }
-    
-	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.componentId.hashCode();
-		hash = hash * prime + this.supplierId;
-		
-		return hash;
-    }
+	@Override
+	public String toString() {
+		return "SupplierComponentPK [componentId=" + componentId + ", supplierId=" + supplierId + "]";
+	}
+
 }

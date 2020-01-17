@@ -3,12 +3,12 @@ package de.novatec.showcase.supplier.ejb.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -16,76 +16,73 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
+import javax.persistence.Version;
 
 @Entity
-@Table(name="S_PURCHASE_ORDERLINE")
-	@NamedQueries(value ={@NamedQuery(name = PurchaseOrderLine.COUNT_PURCHASEORDERLINE, query = PurchaseOrderLine.COUNT_PURCHASEORDERLINE_QUERY),
-			@NamedQuery(name = PurchaseOrderLine.FIND_PURCHASEORDERLINE_BY_COMPONENT_ID, query = PurchaseOrderLine.FIND_PURCHASEORDERLINE_BY_COMPONENT_ID_QUERY)
-	}
-)
-public class PurchaseOrderLine implements Serializable 
-{
+@Table(name = "S_PURCHASE_ORDERLINE")
+@NamedQueries(value = {
+		@NamedQuery(name = PurchaseOrderLine.COUNT_PURCHASEORDERLINE, query = PurchaseOrderLine.COUNT_PURCHASEORDERLINE_QUERY),
+		@NamedQuery(name = PurchaseOrderLine.FIND_PURCHASEORDERLINE_BY_COMPONENT_ID, query = PurchaseOrderLine.FIND_PURCHASEORDERLINE_BY_COMPONENT_ID_QUERY) })
+@IdClass(PurchaseOrderLinePK.class)
+public class PurchaseOrderLine implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String COUNT_PURCHASEORDERLINE = "COUNT_PURCHASEORDERLINE";
-	
+
 	public static final String FIND_PURCHASEORDERLINE_BY_COMPONENT_ID = "FIND_PURCHASEORDERLINE_BY_COMPONENT_ID";
 
 	public static final String COUNT_PURCHASEORDERLINE_QUERY = "SELECT COUNT(po) FROM PurchaseOrderLine po";
-	
+
 	public static final String FIND_PURCHASEORDERLINE_BY_COMPONENT_ID_QUERY = "SELECT pol FROM PurchaseOrderLine pol WHERE pol.partNumber = :id";
 
-	@EmbeddedId
-	@AttributeOverrides({ @AttributeOverride(name = "poNumber", column = @Column(name = "POL_PO_ID")),
-		@AttributeOverride(name = "polNumber", column = @Column(name = "POL_NUMBER")) })
-	private PurchaseOrderLinePK pk;
+	@Id
+	@Column(name = "POL_PO_ID", nullable = false)
+	private Integer poNumber;
 
-	@Column(name="POL_BALANCE")
+	@Id
+	@Column(name = "POL_NUMBER", nullable = false)
+	private Integer polNumber;
+
+	@Column(name = "POL_BALANCE", precision = 12, scale = 2)
 	private BigDecimal outstandingBalance;
 
-    @Temporal( TemporalType.DATE)
-	@Column(name="POL_DELDATE")
+	@Temporal(TemporalType.DATE)
+	@Column(name = "POL_DELDATE")
 	private Date requestedDeliveryDate;
 
-	@Column(name="POL_LEADTIME")
+	@Column(name = "POL_LEADTIME")
 	private int leadtime;
 
-	@Column(name="POL_LOCATION")
+	@Column(name = "POL_LOCATION", nullable = false)
 	private int deliveryLocation;
 
-	@Column(name="POL_MESSAGE")
+	@Column(name = "POL_MESSAGE",length = 100)
 	private String optionalComment;
 
-	@Column(name="POL_P_ID")
+	@Column(name = "POL_P_ID", length =20)
 	private String partNumber;
 
-	@Column(name="POL_QTY")
+	@Column(name = "POL_QTY")
 	private int orderedQuantity;
 
-	@Column(name="POL_VERSION")
-	private int version;
+	@Version
+	@Column(name = "POL_VERSION")
+	private Integer version;
 
-    @ManyToOne
-	@JoinColumn(name="POL_PO_ID", insertable = false, updatable = false)
+	@ManyToOne
+	@JoinColumn(name = "POL_PO_ID", insertable = false, updatable = false)
 	private PurchaseOrder purchaseOrder;
 
-    
-    public PurchaseOrderLine()
-    {
-    	super();
-    }
-    
-	public PurchaseOrderLine(Integer polNumber, Integer poNumber,
-			int deliveryLocation,String partNumber, int orderedQuantity,
-			BigDecimal outstandingBalance, Date requestedDeliveryDate,
-			String optionalComment,int leadtime,int version,
-			PurchaseOrder purchaseOrder)
-	{
+	public PurchaseOrderLine() {
 		super();
-		this.pk = new PurchaseOrderLinePK();
-		this.pk.setPolNumber(polNumber);
-		this.pk.setPoNumber(poNumber);
+	}
+
+	public PurchaseOrderLine(Integer polNumber, Integer poNumber, int deliveryLocation, String partNumber,
+			int orderedQuantity, BigDecimal outstandingBalance, Date requestedDeliveryDate, String optionalComment,
+			int leadtime, PurchaseOrder purchaseOrder) {
+		super();
+		this.polNumber = polNumber;
+		this.poNumber = poNumber;
 		this.outstandingBalance = outstandingBalance;
 		this.requestedDeliveryDate = requestedDeliveryDate;
 		this.leadtime = leadtime;
@@ -93,19 +90,29 @@ public class PurchaseOrderLine implements Serializable
 		this.optionalComment = optionalComment;
 		this.partNumber = partNumber;
 		this.orderedQuantity = orderedQuantity;
-		this.version = version;
 		this.purchaseOrder = purchaseOrder;
 	}
 
-
-	public PurchaseOrderLinePK getPk() {
-		return this.pk;
+	public Integer getPoNumber() {
+		return poNumber;
 	}
 
-	public void setPk(PurchaseOrderLinePK pk) {
-		this.pk = pk;
+	public void setPoNumber(Integer poNumber) {
+		this.poNumber = poNumber;
 	}
-	
+
+	public Integer getPolNumber() {
+		return polNumber;
+	}
+
+	public void setPolNumber(Integer polNumber) {
+		this.polNumber = polNumber;
+	}
+
+	public void setOrderedQuantity(int orderedQuantity) {
+		this.orderedQuantity = orderedQuantity;
+	}
+
 	public BigDecimal getOutstandingBalance() {
 		return this.outstandingBalance;
 	}
@@ -162,11 +169,11 @@ public class PurchaseOrderLine implements Serializable
 		this.orderedQuantity = orderedQuantity;
 	}
 
-	public int getVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 
@@ -179,11 +186,36 @@ public class PurchaseOrderLine implements Serializable
 	}
 
 	@Override
-	public String toString() {
-		return "PurchaseOrderLine [pk=" + pk + ", outstandingBalance=" + outstandingBalance + ", requestedDeliveryDate="
-				+ requestedDeliveryDate + ", leadtime=" + leadtime + ", deliveryLocation=" + deliveryLocation
-				+ ", optionalComment=" + optionalComment + ", partNumber=" + partNumber + ", orderedQuantity="
-				+ orderedQuantity + ", version=" + version + ", purchaseOrder=" + purchaseOrder + "]";
+	public int hashCode() {
+		return Objects.hash(deliveryLocation, leadtime, optionalComment, orderedQuantity, outstandingBalance,
+				partNumber, poNumber, polNumber, requestedDeliveryDate, version);
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof PurchaseOrderLine)) {
+			return false;
+		}
+		PurchaseOrderLine other = (PurchaseOrderLine) obj;
+		return deliveryLocation == other.deliveryLocation && leadtime == other.leadtime
+				&& Objects.equals(optionalComment, other.optionalComment) && orderedQuantity == other.orderedQuantity
+				&& Objects.equals(outstandingBalance, other.outstandingBalance)
+				&& Objects.equals(partNumber, other.partNumber) && Objects.equals(poNumber, other.poNumber)
+				&& Objects.equals(polNumber, other.polNumber) 
+				&& Objects.equals(requestedDeliveryDate, other.requestedDeliveryDate)
+				&& Objects.equals(version, other.version);
+	}
+
+	@Override
+	public String toString() {
+		return "PurchaseOrderLine [poNumber=" + poNumber + ", polNumber=" + polNumber + ", outstandingBalance="
+				+ outstandingBalance + ", requestedDeliveryDate=" + requestedDeliveryDate + ", leadtime=" + leadtime
+				+ ", deliveryLocation=" + deliveryLocation + ", optionalComment=" + optionalComment + ", partNumber="
+				+ partNumber + ", orderedQuantity=" + orderedQuantity + ", version=" + version + ", purchaseOrder="
+				+ purchaseOrder + "]";
+	}
+
 }

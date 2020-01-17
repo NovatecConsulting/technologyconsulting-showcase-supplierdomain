@@ -1,8 +1,6 @@
 {
-	"pk": {
-		"supplierId": 2,
-		"componentId": "1"
-	},
+	"supplierId": 2,
+	"componentId": "1",
 	"deliveryInDays": 1,
 	"discount": 5.0,
 	"price": 102.0,

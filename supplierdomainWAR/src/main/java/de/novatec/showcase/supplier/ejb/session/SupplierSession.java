@@ -56,7 +56,7 @@ public class SupplierSession implements SupplierSessionLocal {
 		else
 		{
 			if (supplierComponents.size() == 1) {
-				return em.find(Supplier.class, supplierComponents.get(0).getPk().getSupplierId());
+				return em.find(Supplier.class, supplierComponents.get(0).getSupplierId());
 			}
 
 			// Sort by price
@@ -79,7 +79,7 @@ public class SupplierSession implements SupplierSessionLocal {
 					}
 				}
 			}
-			return em.find(Supplier.class, supplierComponent.getPk().getSupplierId());
+			return em.find(Supplier.class, supplierComponent.getSupplierId());
 		}
 	}
 
@@ -117,17 +117,15 @@ public class SupplierSession implements SupplierSessionLocal {
 		to.setTimeInMillis(System.currentTimeMillis());
 
 		PurchaseOrderLine popurchaseOrderLine = new PurchaseOrderLine(getNextPolNumber(), purchaseOrder.getPoNumber(),
-				componentDemand.getLocation(), supplierComponent.getPk().getComponentId(),
+				componentDemand.getLocation(), supplierComponent.getComponentId(),
 				componentDemand.getQuantity(), BigDecimal.valueOf(RandomTypes.getDouble(1, 10000)),
 				new java.sql.Date((RandomTypes.getDate(since, to)).getTimeInMillis()),
-				RandomTypes.getString("COMMENT_", 20, 100), RandomTypes.getInt(1, 100), RandomTypes.getInt(1, 100),
-				purchaseOrder);
+				RandomTypes.getString("COMMENT_", 20, 100), RandomTypes.getInt(1, 100), purchaseOrder);
 
 		return popurchaseOrderLine;
 	}
 
 	private int getNextPolNumber() {
-		//TOD refactor!
 		TypedQuery<Long> query = em.createNamedQuery(PurchaseOrderLine.COUNT_PURCHASEORDERLINE, Long.class);
 		int nextPolNumber = query.getSingleResult().intValue();
 		return ++nextPolNumber;
@@ -212,8 +210,7 @@ public class SupplierSession implements SupplierSessionLocal {
 		date.add(Calendar.DAY_OF_MONTH, RandomTypes.getInt(1, 1000));
 
 		PurchaseOrder purchaseOrder = new PurchaseOrder(RandomTypes.getInt(1, 100), supplier.getId(),
-				new java.sql.Timestamp((RandomTypes.getDate(from, to)).getTimeInMillis()),
-				0);
+				new java.sql.Timestamp((RandomTypes.getDate(from, to)).getTimeInMillis()));
 		return purchaseOrder;
 	}
 

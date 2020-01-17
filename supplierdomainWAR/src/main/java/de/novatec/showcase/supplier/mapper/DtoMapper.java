@@ -9,10 +9,8 @@ import de.novatec.showcase.supplier.dto.PurchaseOrderLinePK;
 import de.novatec.showcase.supplier.dto.Supplier;
 import de.novatec.showcase.supplier.dto.SupplierComponent;
 import de.novatec.showcase.supplier.dto.SupplierComponentPK;
-import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 abstract public class DtoMapper {
@@ -26,16 +24,7 @@ abstract public class DtoMapper {
 		mapperFactory.classMap(SupplierComponent.class, de.novatec.showcase.supplier.ejb.entity.SupplierComponent.class ).byDefault().register();
 		mapperFactory.classMap(SupplierComponentPK.class, de.novatec.showcase.supplier.ejb.entity.SupplierComponentPK.class ).byDefault().register();
 		mapperFactory.classMap(PurchaseOrder.class, de.novatec.showcase.supplier.ejb.entity.PurchaseOrder.class ).byDefault().register();
-		mapperFactory.classMap(PurchaseOrderLine.class, de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLine.class )
-		.customize(new CustomMapper <PurchaseOrderLine, de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLine >(){
-			// break up cyclic dependency
-			@Override
-			public void mapBtoA(de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLine entity, PurchaseOrderLine dto, MappingContext context) {
-				dto.setPurchaseOrder(null);
-				super.mapBtoA(entity, dto, context);
-			}
-		})
-		.byDefault().register();
+		mapperFactory.classMap(PurchaseOrderLine.class, de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLine.class ).byDefault().register();
 		mapperFactory.classMap(PurchaseOrderLinePK.class, de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLinePK.class ).byDefault().register();
 		mapper = mapperFactory.getMapperFacade();
 	}

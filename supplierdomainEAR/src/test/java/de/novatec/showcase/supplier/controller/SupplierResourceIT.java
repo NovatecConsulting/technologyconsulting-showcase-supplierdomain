@@ -95,7 +95,7 @@ public class SupplierResourceIT extends ResourceItBase {
 				purchaseOrder.getPurchaseOrderlines());
 		
 		for (PurchaseOrderLine purchaseOrderLine : purchaseOrders.get(0).getPurchaseOrderlines()) {
-			target = client.target(PURCHASE_ORDER_LINE_URL).path(purchaseOrderLine.getPk().getPoNumber()+"/"+purchaseOrderLine.getPk().getPolNumber());
+			target = client.target(PURCHASE_ORDER_LINE_URL).path(purchaseOrderLine.getPoNumber()+"/"+purchaseOrderLine.getPolNumber());
 			response = asTestUser(target.request(MediaType.APPLICATION_JSON_TYPE)).get();
 			assertResponse200(PURCHASE_ORDER_LINE_URL, response);
 			assertEquals("PurchaseOrderLines should be the same!", purchaseOrderLine, response.readEntity(PurchaseOrderLine.class));

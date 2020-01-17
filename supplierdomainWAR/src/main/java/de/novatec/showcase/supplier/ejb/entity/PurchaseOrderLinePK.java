@@ -1,10 +1,8 @@
 package de.novatec.showcase.supplier.ejb.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
 public class PurchaseOrderLinePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -37,28 +35,23 @@ public class PurchaseOrderLinePK implements Serializable {
 		this.poNumber = poNumber;
 	}
 
-	public boolean equals(Object other) {
-		if (this == other) {
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(poNumber, polNumber);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (!(other instanceof PurchaseOrderLinePK)) {
+		if (!(obj instanceof PurchaseOrderLinePK)) {
 			return false;
 		}
-		PurchaseOrderLinePK castOther = (PurchaseOrderLinePK)other;
-		return 
-			(this.polNumber == castOther.polNumber)
-			&& (this.poNumber == castOther.poNumber);
-
-    }
-    
-	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.polNumber;
-		hash = hash * prime + this.poNumber;
-		
-		return hash;
-    }
+		PurchaseOrderLinePK other = (PurchaseOrderLinePK) obj;
+		return Objects.equals(poNumber, other.poNumber) && Objects.equals(polNumber, other.polNumber);
+	}
 
 	@Override
 	public String toString() {

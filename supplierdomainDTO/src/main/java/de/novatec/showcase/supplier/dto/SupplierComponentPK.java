@@ -14,12 +14,12 @@ public class SupplierComponentPK implements Serializable {
 	private String componentId;
 
 	@Schema(required=true)
-	private int supplierId;
+	private Integer supplierId;
 
 	public SupplierComponentPK() {
 	}
 
-	public SupplierComponentPK(String componentId, int supplierId) {
+	public SupplierComponentPK(String componentId, Integer supplierId) {
 		super();
 		this.componentId = componentId;
 		this.supplierId = supplierId;
@@ -33,11 +33,11 @@ public class SupplierComponentPK implements Serializable {
 		this.componentId = componentId;
 	}
 
-	public int getSupplierId() {
+	public Integer getSupplierId() {
 		return this.supplierId;
 	}
 
-	public void setSupplierId(int supplierId) {
+	public void setSupplierId(Integer supplierId) {
 		this.supplierId = supplierId;
 	}
 

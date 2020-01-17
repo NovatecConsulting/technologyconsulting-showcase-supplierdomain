@@ -18,7 +18,7 @@ public class Supplier implements Serializable {
 
 	private String replyUrl;
 
-	private int version;
+	private Integer version;
 
 	private String wsUrl;
 
@@ -27,14 +27,13 @@ public class Supplier implements Serializable {
     public Supplier() {
     }
 
-	public Supplier(String name, String contact, String replyUrl, String wsUrl, Address address, int version) {
+	public Supplier(String name, String contact, String replyUrl, String wsUrl, Address address) {
 		super();
 		this.name = name;
 		this.contact = contact;
 		this.replyUrl = replyUrl;
 		this.wsUrl = wsUrl;
 		this.address = address;
-		this.version = version;
 	}
 
 	public Integer getId() {
@@ -70,11 +69,11 @@ public class Supplier implements Serializable {
 		this.replyUrl = replyUrl;
 	}
 
-	public int getVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 

@@ -20,7 +20,7 @@ public class SComponent implements Serializable {
 
 	private String unitOfMeasure;
 
-	private int version;
+	private Integer version;
 
 	private int containerSize;
 
@@ -81,11 +81,11 @@ public class SComponent implements Serializable {
 		this.unitOfMeasure = unitOfMeasure;
 	}
 
-	public int getVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 

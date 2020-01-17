@@ -22,23 +22,22 @@ public class SComponent implements Serializable {
 	public static final String ALL_SCOMPONENT_QUERY = "SELECT sc FROM SComponent sc";
 
 	@Id
-	@Column(name = "COMP_ID")
+	@Column(name = "COMP_ID", nullable = false, length = 20)
 	private String id;
 
-	@Column(name = "COMP_COST")
+	@Column(name = "COMP_COST", precision = 12, scale = 2)
 	private BigDecimal currentBestPartCost;
 
-	@Column(name = "COMP_DESC")
+	@Column(name = "COMP_DESC", length = 100)
 	private String description;
 
-	@Column(name = "COMP_NAME")
-	
+	@Column(name = "COMP_NAME", length = 10)
 	private String partName;
 
 	@Column(name = "COMP_SITE_ID")
 	private int siteId;
 
-	@Column(name = "COMP_UNIT")
+	@Column(name = "COMP_UNIT", length = 10)
 	private String unitOfMeasure;
 
 	@Column(name = "COMP_VERSION")

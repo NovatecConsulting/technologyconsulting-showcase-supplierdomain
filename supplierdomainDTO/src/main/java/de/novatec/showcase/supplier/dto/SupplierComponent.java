@@ -11,7 +11,9 @@ public class SupplierComponent implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private SupplierComponentPK pk;
+	private String componentId;
+	
+	private Integer supplierId;
 
 	private int deliveryInDays;
 
@@ -21,30 +23,38 @@ public class SupplierComponent implements Serializable {
 
 	private int quantityForDiscount;
 
-	private int version;
+	private Integer version;
 
     public SupplierComponent() {
     }
 
-	public SupplierComponent(SupplierComponentPK pk, int deliveryInDays, BigDecimal discount, BigDecimal price,
-			int quantityForDiscount, int version) {
+	public SupplierComponent(Integer supplierId, String componentId, int deliveryInDays, BigDecimal discount, BigDecimal price,
+			int quantityForDiscount) {
 		super();
-		this.pk = pk;
+		this.supplierId = supplierId;
+		this.componentId = componentId;
 		this.deliveryInDays = deliveryInDays;
 		this.discount = discount;
 		this.price = price;
 		this.quantityForDiscount = quantityForDiscount;
-		this.version = version;
 	}
 
-	public SupplierComponentPK getPk() {
-		return this.pk;
+	public String getComponentId() {
+		return componentId;
 	}
 
-	public void setPk(SupplierComponentPK pk) {
-		this.pk = pk;
+	public void setComponentId(String componentId) {
+		this.componentId = componentId;
 	}
-	
+
+	public Integer getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(Integer supplierId) {
+		this.supplierId = supplierId;
+	}
+
 	public int getDeliveryInDays() {
 		return this.deliveryInDays;
 	}
@@ -77,23 +87,24 @@ public class SupplierComponent implements Serializable {
 		this.quantityForDiscount = quantityForDiscount;
 	}
 
-	public int getVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 
 	@Override
 	public String toString() {
-		return "SupplierComponent [pk=" + pk + ", deliveryInDays=" + deliveryInDays + ", discount=" + discount
-				+ ", price=" + price + ", quantityForDiscount=" + quantityForDiscount + ", version=" + version + "]";
+		return "SupplierComponent [componentId=" + componentId + ", supplierId=" + supplierId + ", deliveryInDays="
+				+ deliveryInDays + ", discount=" + discount + ", price=" + price + ", quantityForDiscount="
+				+ quantityForDiscount + ", version=" + version + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(pk, deliveryInDays, discount, price, quantityForDiscount, version);
+		return Objects.hash(componentId, deliveryInDays, discount, price, quantityForDiscount, supplierId, version);
 	}
 
 	@Override
@@ -105,9 +116,10 @@ public class SupplierComponent implements Serializable {
 			return false;
 		}
 		SupplierComponent other = (SupplierComponent) obj;
-		return Objects.equals(pk, other.pk) && deliveryInDays == other.deliveryInDays
+		return Objects.equals(componentId, other.componentId) && deliveryInDays == other.deliveryInDays
 				&& Objects.equals(discount, other.discount) && Objects.equals(price, other.price)
-				&& quantityForDiscount == other.quantityForDiscount && version == other.version;
+				&& quantityForDiscount == other.quantityForDiscount && Objects.equals(supplierId, other.supplierId)
+				&& version == other.version;
 	}
 
 }

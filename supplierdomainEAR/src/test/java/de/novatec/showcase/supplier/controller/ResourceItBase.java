@@ -57,25 +57,25 @@ public abstract class ResourceItBase {
 	
 	// @formatter:off
 	private static List<Supplier> setupSuppliers = Arrays.asList(
-			new Supplier(SUPPLIER_1_KEY, "Supplier 1 contact", "http://locahost:" + PORT, "http://localhost:" + PORT, new Address("street1", "street2", "city", "state", "country", "zip", "phone"), 0),
-			new Supplier(SUPPLIER_2_KEY, "Supplier 2 contact", "http://locahost:" + PORT, "http://localhost:" + PORT, new Address("street1", "street2", "city", "state", "country", "zip", "phone"), 0),
-			new Supplier(SUPPLIER_3_KEY, "Supplier 3 contact", "http://locahost:" + PORT, "http://localhost:" + PORT, new Address("street1", "street2", "city", "state", "country", "zip", "phone"), 0)
+			new Supplier(SUPPLIER_1_KEY, "Supplier 1 contact", "http://locahost:" + PORT, "http://localhost:" + PORT, new Address("street1", "street2", "city", "DE", "country", "zip", "phone")),
+			new Supplier(SUPPLIER_2_KEY, "Supplier 2 contact", "http://locahost:" + PORT, "http://localhost:" + PORT, new Address("street1", "street2", "city", "DE", "country", "zip", "phone")),
+			new Supplier(SUPPLIER_3_KEY, "Supplier 3 contact", "http://locahost:" + PORT, "http://localhost:" + PORT, new Address("street1", "street2", "city", "DE", "country", "zip", "phone"))
 			);
 	@SuppressWarnings("serial")
 	private static Map<String, List<SupplierComponent>> setupSupplierComponents = new HashMap<String, List<SupplierComponent>>() {
 		{
 		put(SUPPLIER_1_KEY, Arrays.asList(
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_1, 1), 7, new BigDecimal(0.0), new BigDecimal(5.0), 50, 0),
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_2, 1), 7, new BigDecimal(0.0), new BigDecimal(5.0), 50, 0),
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_3, 1), 7, new BigDecimal(0.0), new BigDecimal(5.0), 50, 0)));
+				new SupplierComponent(Integer.valueOf(1), COMPONENT_ID_1, 7, new BigDecimal(0.0), new BigDecimal(5.0), 50),
+				new SupplierComponent(Integer.valueOf(1), COMPONENT_ID_2, 7, new BigDecimal(0.0), new BigDecimal(5.0), 50),
+				new SupplierComponent(Integer.valueOf(1), COMPONENT_ID_3, 7, new BigDecimal(0.0), new BigDecimal(5.0), 50)));
 		put(SUPPLIER_2_KEY, Arrays.asList(
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_1, 2), 14, new BigDecimal(5.0), new BigDecimal(50.0), 100, 0),
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_2, 2), 14, new BigDecimal(5.0), new BigDecimal(50.0), 100, 0),
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_3, 2), 14, new BigDecimal(5.0), new BigDecimal(50.0), 100, 0)));
+				new SupplierComponent(Integer.valueOf(2), COMPONENT_ID_1, 14, new BigDecimal(5.0), new BigDecimal(50.0), 100),
+				new SupplierComponent(Integer.valueOf(2), COMPONENT_ID_2, 14, new BigDecimal(5.0), new BigDecimal(50.0), 100),
+				new SupplierComponent(Integer.valueOf(2), COMPONENT_ID_3, 14, new BigDecimal(5.0), new BigDecimal(50.0), 100)));
 		put(SUPPLIER_3_KEY, Arrays.asList(
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_1, 3), 0, new BigDecimal(10.0), new BigDecimal(100.0), 1000, 0),
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_2, 3), 0, new BigDecimal(10.0), new BigDecimal(100.0), 1000, 0),
-				new SupplierComponent(new SupplierComponentPK(COMPONENT_ID_3, 3), 0, new BigDecimal(10.0), new BigDecimal(100.0), 1000, 0)));
+				new SupplierComponent(Integer.valueOf(3), COMPONENT_ID_1, 0, new BigDecimal(10.0), new BigDecimal(100.0), 1000),
+				new SupplierComponent(Integer.valueOf(3), COMPONENT_ID_2, 0, new BigDecimal(10.0), new BigDecimal(100.0), 1000),
+				new SupplierComponent(Integer.valueOf(3), COMPONENT_ID_3, 0, new BigDecimal(10.0), new BigDecimal(100.0), 1000)));
 		}
 	};
 	// @formatter:on
@@ -121,9 +121,9 @@ public abstract class ResourceItBase {
 			Supplier dbSupplier = createSupplier(supplier);
 			dbSuppliers.put(dbSupplier.getName(), dbSupplier);
 			for (SupplierComponent supplierComponent : setupSupplierComponents.get(dbSupplier.getName())) {
-				supplierComponent.getPk().setSupplierId(dbSupplier.getId());
+				supplierComponent.setSupplierId(dbSupplier.getId());
 				SupplierComponent dbSupplierComponent = createSupplierComponent(supplierComponent);
-				dbSupplierComponents.put(dbSupplierComponent.getPk(), dbSupplierComponent);
+				dbSupplierComponents.put(new SupplierComponentPK(supplierComponent.getComponentId(), supplierComponent.getSupplierId()), dbSupplierComponent);
 			}
 		}
 	}

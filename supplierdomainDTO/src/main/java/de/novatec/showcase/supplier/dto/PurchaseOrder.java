@@ -2,7 +2,6 @@ package de.novatec.showcase.supplier.dto;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
@@ -30,20 +29,11 @@ public class PurchaseOrder implements Serializable {
 
 	private Integer supplierId;
 
-	private int version;
+	private Integer version;
 
 	private Collection<PurchaseOrderLine> purchaseOrderlines;
 
 	public PurchaseOrder() {
-	}
-
-	public PurchaseOrder(int siteId, Integer supplierId, Timestamp startDate, int version) {
-		super();
-		this.siteId = siteId;
-		this.startDate = startDate;
-		this.supplierId = supplierId;
-		this.version = version;
-		this.purchaseOrderlines = new ArrayList<PurchaseOrderLine>();
 	}
 
 	public int getPoNumber() {
@@ -86,11 +76,11 @@ public class PurchaseOrder implements Serializable {
 		this.supplierId = supplierId;
 	}
 
-	public int getVersion() {
+	public Integer getVersion() {
 		return this.version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 
