@@ -1,6 +1,5 @@
 package de.novatec.showcase.supplier.ejb.entity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -20,9 +19,7 @@ import javax.persistence.Version;
 		@NamedQuery(name = SupplierComponent.FIND_SUPPCOMPONENT_BY_COMPONENT_ID, query = SupplierComponent.FIND_SUPPCOMPONENT_BY_COMPONENT_ID_QUERY),
 		@NamedQuery(name = SupplierComponent.FIND_SUPPCOMPONENT_BY_SC_SUPP_ID, query = SupplierComponent.FIND_SUPPCOMPONENT_BY_SC_SUPP_ID_QUERY) })
 @IdClass(SupplierComponentPK.class)
-public class SupplierComponent implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class SupplierComponent {
 
 	public static final String FIND_SUPPCOMPONENT_BY_COMPONENT_ID = "FIND_SUPPCOMPONENT_BY_COMPONENT_ID";
 

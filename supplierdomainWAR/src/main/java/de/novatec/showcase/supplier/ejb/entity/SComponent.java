@@ -1,6 +1,5 @@
 package de.novatec.showcase.supplier.ejb.entity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
@@ -13,9 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "S_COMPONENT")
 @NamedQueries({ @NamedQuery(name = SComponent.ALL_SCOMPONENT, query = SComponent.ALL_SCOMPONENT_QUERY) })
-public class SComponent implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class SComponent {
 
 	public static final String ALL_SCOMPONENT = "ALL_SCOMPONENT";
 

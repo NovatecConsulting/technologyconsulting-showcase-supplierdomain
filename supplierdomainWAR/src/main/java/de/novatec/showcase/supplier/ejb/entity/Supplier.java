@@ -1,6 +1,5 @@
 package de.novatec.showcase.supplier.ejb.entity;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.AttributeOverride;
@@ -22,9 +21,7 @@ import javax.persistence.Version;
 @NamedQueries(value = { @NamedQuery(name = Supplier.ALL_SUPPLIERS, query = Supplier.ALL_SUPPLIERS_QUERY),
 		@NamedQuery(name = Supplier.SUPPLIER_BY_SUPPLIERCOMPONENT_ID, query = Supplier.SUPPLIER_BY_SUPPLIERCOMPONENT_ID_QUERY),
 		@NamedQuery(name = Supplier.LAST_PURCHASEORDER_NUMBER, query = Supplier.LAST_PURCHASEORDER_NUMBER_QUERY) })
-public class Supplier implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Supplier {
 
 	public static final String ALL_SUPPLIERS = "ALL_SUPPLIERS";
 	public static final String SUPPLIER_BY_SUPPLIERCOMPONENT_ID = "SUPPLIER_BY_SUPPLIERCOMPONENT_ID";

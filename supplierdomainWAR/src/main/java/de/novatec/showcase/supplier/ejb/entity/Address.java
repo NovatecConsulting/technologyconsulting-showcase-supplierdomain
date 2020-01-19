@@ -1,14 +1,11 @@
 package de.novatec.showcase.supplier.ejb.entity;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Address implements Serializable
+public class Address 
 {
-
 	@Column(name = "SUPP_STREET1")
 	private String street1;
 
@@ -29,8 +26,6 @@ public class Address implements Serializable
 
 	@Column(name = "SUPP_PHONE")
 	private String phone;
-
-	private static final long serialVersionUID = 1L;
 
 	public Address()
 	{

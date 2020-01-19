@@ -1,14 +1,11 @@
 package de.novatec.showcase.supplier.dto;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Schema(name="Supplier", description="POJO that represents a supplier.")
-public class Supplier implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Supplier {
 
 	private Integer id;
 

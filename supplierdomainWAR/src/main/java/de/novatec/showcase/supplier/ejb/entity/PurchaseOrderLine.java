@@ -1,6 +1,5 @@
 package de.novatec.showcase.supplier.ejb.entity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
@@ -24,8 +23,7 @@ import javax.persistence.Version;
 		@NamedQuery(name = PurchaseOrderLine.COUNT_PURCHASEORDERLINE, query = PurchaseOrderLine.COUNT_PURCHASEORDERLINE_QUERY),
 		@NamedQuery(name = PurchaseOrderLine.FIND_PURCHASEORDERLINE_BY_COMPONENT_ID, query = PurchaseOrderLine.FIND_PURCHASEORDERLINE_BY_COMPONENT_ID_QUERY) })
 @IdClass(PurchaseOrderLinePK.class)
-public class PurchaseOrderLine implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class PurchaseOrderLine {
 
 	public static final String COUNT_PURCHASEORDERLINE = "COUNT_PURCHASEORDERLINE";
 

@@ -1,11 +1,8 @@
 package de.novatec.showcase.supplier.ejb.entity;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-public class SupplierComponentPK implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class SupplierComponentPK {
 
 	private String componentId;
 

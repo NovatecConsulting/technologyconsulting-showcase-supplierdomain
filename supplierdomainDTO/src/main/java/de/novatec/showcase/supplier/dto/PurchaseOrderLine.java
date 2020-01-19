@@ -1,6 +1,5 @@
 package de.novatec.showcase.supplier.dto;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
@@ -14,8 +13,7 @@ import de.novatec.showcase.supplier.GlobalConstants;
 
 @Schema(name="PurchaseOrderLine", description="POJO that represents a purchase order line.")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PurchaseOrderLine implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class PurchaseOrderLine {
 
 	private Integer poNumber;
 	

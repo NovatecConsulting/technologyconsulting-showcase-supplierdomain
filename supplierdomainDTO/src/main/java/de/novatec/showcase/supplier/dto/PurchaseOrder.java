@@ -1,6 +1,5 @@
 package de.novatec.showcase.supplier.dto;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -13,9 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import de.novatec.showcase.supplier.GlobalConstants;
 
 @Schema(name="PurchaseOrder", description="POJO that represents a purchase order.")
-public class PurchaseOrder implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class PurchaseOrder {
 	
 	private int poNumber;
 

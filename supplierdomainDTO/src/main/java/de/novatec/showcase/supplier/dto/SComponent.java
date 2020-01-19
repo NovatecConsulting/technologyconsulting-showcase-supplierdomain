@@ -1,12 +1,9 @@
 package de.novatec.showcase.supplier.dto;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class SComponent implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class SComponent {
 
 	private String id;
 

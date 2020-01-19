@@ -1,14 +1,11 @@
 package de.novatec.showcase.supplier.dto;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Schema(name="PurchaseOrderLinePK", description="POJO that represents a purchase order primary key.")
-public class PurchaseOrderLinePK implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class PurchaseOrderLinePK {
 
 	@Schema(required=true)
 	private Integer polNumber;
