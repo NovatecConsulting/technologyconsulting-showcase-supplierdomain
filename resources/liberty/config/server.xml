@@ -27,7 +27,11 @@
 		<properties	url="jdbc:h2:mem:supplier_db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;TRACE_LEVEL_FILE=4" />
 	</dataSource>
 
-	<basicRegistry id="basic" realm="defaultRealm">
+    <jndiEntry jndiName="manufacturedomain.deliver.url" value="http://localhost:9090/manufacturedomain/component/deliver/"/>
+    <jndiEntry jndiName="manufacturedomain.username" value="admin"/>
+    <jndiEntry jndiName="manufacturedomain.password" value="adminpwd"/>
+
+   	<basicRegistry id="basic" realm="defaultRealm">
 		<user name="admin" password="adminpwd" />
 		<user name="testuser" password="pwd" />
 		<user name="orderer" password="pwd" />
