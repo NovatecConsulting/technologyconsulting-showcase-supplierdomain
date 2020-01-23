@@ -18,8 +18,8 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
-import de.novatec.showcase.manufacture.dto.ComponentDemand;
-import de.novatec.showcase.manufacture.dto.ComponentDemands;
+import de.novatec.showcase.supplier.dto.ComponentDemand;
+import de.novatec.showcase.supplier.dto.ComponentDemands;
 import de.novatec.showcase.supplier.dto.PurchaseOrder;
 import de.novatec.showcase.supplier.dto.PurchaseOrderLine;
 import de.novatec.showcase.supplier.dto.Supplier;
