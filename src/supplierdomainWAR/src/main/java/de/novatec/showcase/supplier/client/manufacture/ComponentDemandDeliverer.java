@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
-import de.novatec.showcase.manufacture.dto.ComponentDemand;
-import de.novatec.showcase.manufacture.dto.ComponentDemands;
+import de.novatec.showcase.supplier.dto.ComponentDemand;
+import de.novatec.showcase.supplier.dto.ComponentDemands;
 
 public class ComponentDemandDeliverer {
 

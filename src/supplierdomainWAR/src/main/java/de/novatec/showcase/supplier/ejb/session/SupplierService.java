@@ -2,7 +2,7 @@ package de.novatec.showcase.supplier.ejb.session;
 
 import java.util.Collection;
 
-import de.novatec.showcase.manufacture.dto.ComponentDemands;
+import de.novatec.showcase.supplier.dto.ComponentDemands;
 import de.novatec.showcase.supplier.client.manufacture.RestcallException;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrder;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLine;

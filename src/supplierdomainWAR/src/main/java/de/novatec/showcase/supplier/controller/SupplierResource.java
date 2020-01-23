@@ -29,7 +29,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
-import de.novatec.showcase.manufacture.dto.ComponentDemands;
+import de.novatec.showcase.supplier.dto.ComponentDemands;
 import de.novatec.showcase.supplier.GlobalConstants;
 import de.novatec.showcase.supplier.client.manufacture.RestcallException;
 import de.novatec.showcase.supplier.dto.PurchaseOrder;

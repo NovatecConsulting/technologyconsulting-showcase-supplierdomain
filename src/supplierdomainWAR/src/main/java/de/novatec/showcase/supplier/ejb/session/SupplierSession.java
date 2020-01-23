@@ -19,8 +19,8 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.novatec.showcase.manufacture.dto.ComponentDemand;
-import de.novatec.showcase.manufacture.dto.ComponentDemands;
+import de.novatec.showcase.supplier.dto.ComponentDemand;
+import de.novatec.showcase.supplier.dto.ComponentDemands;
 import de.novatec.showcase.supplier.client.manufacture.ComponentDemandDeliverer;
 import de.novatec.showcase.supplier.client.manufacture.RestcallException;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrder;
