@@ -30,6 +30,11 @@ import de.novatec.showcase.supplier.ejb.entity.SComponent;
 import de.novatec.showcase.supplier.ejb.entity.Supplier;
 import de.novatec.showcase.supplier.ejb.entity.SupplierComponent;
 import de.novatec.showcase.supplier.ejb.entity.SupplierComponentPK;
+import de.novatec.showcase.supplier.ejb.session.exception.NoValidSupplierFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.PurchaseOrderLineNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.PurchaseOrderNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.SupplierComponentNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.SupplierNotFoundException;
 import de.novatec.showcase.supplier.util.RandomTypes;;
 
 @Stateless
@@ -43,7 +48,7 @@ public class SupplierSession implements SupplierSessionLocal {
 	
 	private ComponentDemandDeliverer componentDemandDeliverer = new ComponentDemandDeliverer();
 
-	private Supplier findSupplier(ComponentDemand componentDemand) throws NoValidSupplierFoundException {
+	private Supplier findSupplier(ComponentDemand componentDemand) throws NoValidSupplierFoundException, SupplierNotFoundException {
 		TypedQuery<SupplierComponent> query = em.createNamedQuery(SupplierComponent.FIND_SUPPCOMPONENT_BY_COMPONENT_ID,
 				SupplierComponent.class);
 		query.setParameter("id", componentDemand.getComponentId());
@@ -56,7 +61,7 @@ public class SupplierSession implements SupplierSessionLocal {
 		else
 		{
 			if (supplierComponents.size() == 1) {
-				return em.find(Supplier.class, supplierComponents.get(0).getSupplierId());
+				return this.getSupplier(supplierComponents.get(0).getSupplierId());
 			}
 
 			// Sort by price
@@ -89,14 +94,24 @@ public class SupplierSession implements SupplierSessionLocal {
 	}
 
 	@Override
-	public PurchaseOrder getPurchaseOrder(Integer poNumber) {
-		return em.find(PurchaseOrder.class, poNumber);
+	public PurchaseOrder getPurchaseOrder(Integer poNumber) throws PurchaseOrderNotFoundException {
+		PurchaseOrder purchaseOrder = em.find(PurchaseOrder.class, poNumber);
+		if(purchaseOrder == null)
+		{
+			throw new PurchaseOrderNotFoundException("The PurchaseOrder with id "+poNumber+"was not found!");
+		}
+		return purchaseOrder;
 	}
 	
 
 	@Override
-	public PurchaseOrderLine getPurchaseOrderLine(PurchaseOrderLinePK purchaseOrderLinePk) {
-		return em.find(PurchaseOrderLine.class, purchaseOrderLinePk);
+	public PurchaseOrderLine getPurchaseOrderLine(PurchaseOrderLinePK purchaseOrderLinePk) throws PurchaseOrderLineNotFoundException {
+		PurchaseOrderLine purchaseOrderLine = em.find(PurchaseOrderLine.class, purchaseOrderLinePk);
+		if (purchaseOrderLine == null) {
+			throw new PurchaseOrderLineNotFoundException(
+					"The PurchaseOrderLine with PurchaseOrderLinePK " + purchaseOrderLinePk + "was not found!");
+		}
+		return purchaseOrderLine;
 	}
 
 	public Collection<SComponent> getAllSComponent() {
@@ -137,8 +152,13 @@ public class SupplierSession implements SupplierSessionLocal {
 	}
 
 	@Override
-	public Supplier getSupplier(Integer supplierId) {
-		return em.find(Supplier.class, supplierId);
+	public Supplier getSupplier(Integer supplierId) throws SupplierNotFoundException {
+		Supplier supplier = em.find(Supplier.class, supplierId);
+		if( supplier == null )
+		{
+			throw new SupplierNotFoundException("The Supplier with id " + supplierId + " was not found!");
+		}
+		return supplier;
 	}
 
 	@Override
@@ -147,8 +167,13 @@ public class SupplierSession implements SupplierSessionLocal {
 	}
 
 	@Override
-	public SupplierComponent getSupplierComponent(SupplierComponentPK supplierComponentPK) {
-		return em.find(SupplierComponent.class, supplierComponentPK);
+	public SupplierComponent getSupplierComponent(SupplierComponentPK supplierComponentPK) throws SupplierComponentNotFoundException {
+		SupplierComponent supplierComponent = em.find(SupplierComponent.class, supplierComponentPK);
+		if(supplierComponent == null )
+		{
+			throw new SupplierComponentNotFoundException("The Supplier with SupplierComponentPK " + supplierComponentPK + " was not found!");
+		}
+		return supplierComponent;
 	}
 
 	@Override
@@ -177,7 +202,7 @@ public class SupplierSession implements SupplierSessionLocal {
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public Collection<PurchaseOrder> purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException {
+	public Collection<PurchaseOrder> purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException, SupplierNotFoundException {
 
 		Map<Integer, PurchaseOrder> purchaseOrders = new HashMap<Integer, PurchaseOrder>();
 

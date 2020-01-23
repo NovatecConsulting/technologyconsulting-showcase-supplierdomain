@@ -36,8 +36,12 @@ import de.novatec.showcase.supplier.dto.PurchaseOrderLinePK;
 import de.novatec.showcase.supplier.dto.Supplier;
 import de.novatec.showcase.supplier.dto.SupplierComponent;
 import de.novatec.showcase.supplier.dto.SupplierComponentPK;
-import de.novatec.showcase.supplier.ejb.session.NoValidSupplierFoundException;
 import de.novatec.showcase.supplier.ejb.session.SupplierSessionLocal;
+import de.novatec.showcase.supplier.ejb.session.exception.NoValidSupplierFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.PurchaseOrderLineNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.PurchaseOrderNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.SupplierComponentNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.SupplierNotFoundException;
 import de.novatec.showcase.supplier.mapper.DtoMapper;
 
 @ManagedBean
@@ -94,11 +98,11 @@ public class SupplierResource {
 	        summary = "Get the suppliers",
 	        description = "Get the available suppliers.")
 	public Response getSuppliers() {
-		Collection<Supplier> supplier = DtoMapper.mapToSupplierDto(bean.getAllSuppliers());
-		if (supplier == null) {
+		Collection<Supplier> suppliers = DtoMapper.mapToSupplierDto(bean.getAllSuppliers());
+		if (suppliers.isEmpty()) {
 			return Response.status(Response.Status.NOT_FOUND).entity("No Supplier found!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
-		return Response.ok().entity(supplier).type(MediaType.APPLICATION_JSON_TYPE).build();
+		return Response.ok().entity(suppliers).type(MediaType.APPLICATION_JSON_TYPE).build();
 	}
 
 	@GET
@@ -112,7 +116,7 @@ public class SupplierResource {
 	                description = "Supplier not found",
 	                content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
-	            		responseCode = "500",
+	            		responseCode = "400",
 	            		description = "Supplier id is less than 1",
 	            		content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
@@ -131,11 +135,13 @@ public class SupplierResource {
 		            schema = @Schema(type = SchemaType.INTEGER)) 
 			@PathParam("id") Integer supplierId) {
 		if (supplierId.intValue() <= 0) {
-			return Response.serverError().entity("Id cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("Id cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
-		Supplier supplier = DtoMapper.mapToSupplierDto(bean.getSupplier(supplierId));
-		if (supplier == null) {
-			return Response.status(Response.Status.NOT_FOUND).entity("No Supplier with id " + supplierId + " found!")
+		Supplier supplier;
+		try {
+			supplier = DtoMapper.mapToSupplierDto(bean.getSupplier(supplierId));
+		} catch (SupplierNotFoundException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage())
 					.type(MediaType.TEXT_PLAIN).build();
 		}
 		return Response.ok().entity(supplier).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -205,6 +211,8 @@ public class SupplierResource {
 			purchaseOrders = DtoMapper.mapToPurchaseOrderDto(bean.purchase(componentDemands));
 		} catch (NoValidSupplierFoundException e) {
 			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+		} catch (SupplierNotFoundException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
 		}
 		return Response.created(uriInfo.getAbsolutePathBuilder().build()).type(MediaType.APPLICATION_JSON_TYPE).entity(purchaseOrders).build();
 	}
@@ -239,15 +247,17 @@ public class SupplierResource {
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
 			@PathParam("poNumber") Integer poNumber, @Context UriInfo uriInfo) {
-		PurchaseOrder purchaseOrder = DtoMapper.mapToPurchaseOrderDto(bean.getPurchaseOrder(poNumber));
-		if (purchaseOrder == null) {
+		PurchaseOrder purchaseOrder;
+		try {
+			purchaseOrder = DtoMapper.mapToPurchaseOrderDto(bean.getPurchaseOrder(poNumber));
+		} catch (PurchaseOrderNotFoundException e) {
 			return Response.status(Response.Status.NOT_FOUND)
-					.entity("PurchaseOrder with poNumber " + poNumber + " not found!").type(MediaType.TEXT_PLAIN).build();
+					.entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
 		}
 		try {
 			bean.processDelivery(DtoMapper.mapToPurchaseOrderEntity(purchaseOrder));
 		} catch (RestcallException e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+			return Response.serverError()
 					.entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
 		}
 		return Response.ok().build();
@@ -274,7 +284,7 @@ public class SupplierResource {
 	        description = "Get the available purchase orders.")
 	public Response getPurchaseOrders() {
 		Collection<PurchaseOrder> purchaseOrders = DtoMapper.mapToPurchaseOrderDto(bean.getAllPurchaseOrders());
-		if (purchaseOrders == null) {
+		if (purchaseOrders.isEmpty()) {
 			return Response.status(Response.Status.NOT_FOUND).entity("No PurchaseOrder found!").build();
 		}
 		return Response.ok().entity(purchaseOrders).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -292,7 +302,7 @@ public class SupplierResource {
 	                description = "PurchaseOrder not found",
 	                content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
-	            		responseCode = "500",
+	            		responseCode = "400",
 	            		description = "PurchaseOrder id is less than 1",
 	            		content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
@@ -310,10 +320,15 @@ public class SupplierResource {
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
 			@PathParam("poNumber") Integer poNumber) {
-		PurchaseOrder purchaseOrder = DtoMapper.mapToPurchaseOrderDto(bean.getPurchaseOrder(poNumber));
-		if (purchaseOrder == null) {
+		if (poNumber.intValue() <= 0) {
+			return Response.status(Response.Status.BAD_REQUEST).entity("poNumber cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
+		}
+		PurchaseOrder purchaseOrder;
+		try {
+			purchaseOrder = DtoMapper.mapToPurchaseOrderDto(bean.getPurchaseOrder(poNumber));
+		} catch (PurchaseOrderNotFoundException e) {
 			return Response.status(Response.Status.NOT_FOUND)
-					.entity("PurchaseOrder with poNumber " + poNumber + " not found!").type(MediaType.TEXT_PLAIN_TYPE).build();
+					.entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		return Response.ok().entity(purchaseOrder).type(MediaType.APPLICATION_JSON_TYPE).build();
 	}
@@ -330,7 +345,7 @@ public class SupplierResource {
 	                description = "PurchaseOrderLine not found",
 	                content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
-	            		responseCode = "500",
+	            		responseCode = "400",
 	            		description = "PurchaseOrderLine polNumber is less than 1 and/or polNumber is less than 1",
 	            		content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
@@ -355,14 +370,16 @@ public class SupplierResource {
 		            schema = @Schema(type = SchemaType.INTEGER)) 
 			@PathParam("polNumber") Integer polNumber) {
 		if (poNumber.intValue() <= 0 || polNumber.intValue() <= 0) {
-			return Response.serverError().entity("poNumber/polNumber cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("poNumber/polNumber cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		PurchaseOrderLinePK purchaseorderLinePk = new PurchaseOrderLinePK(polNumber, poNumber);
-		PurchaseOrderLine purchaseOrderLine = DtoMapper.mapToPurchaseOrderLineDto(
-				bean.getPurchaseOrderLine(DtoMapper.mapToPurchaseOrderLinePKEntity(purchaseorderLinePk)));
-		if (purchaseOrderLine == null) {
+		PurchaseOrderLine purchaseOrderLine;
+		try {
+			purchaseOrderLine = DtoMapper.mapToPurchaseOrderLineDto(
+					bean.getPurchaseOrderLine(DtoMapper.mapToPurchaseOrderLinePKEntity(purchaseorderLinePk)));
+		} catch (PurchaseOrderLineNotFoundException e) {
 			return Response.status(Response.Status.NOT_FOUND).entity(
-					"PurchaseOrderLine with poNumber " + poNumber + " and polNumber " + polNumber + " not found!")
+					e.getMessage())
 					.type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		return Response.ok().entity(purchaseOrderLine).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -390,7 +407,7 @@ public class SupplierResource {
 	public Response getSupplierComponents() {
 		Collection<SupplierComponent> supplierComponents = DtoMapper
 				.mapToSupplierComponentDto(bean.getAllSupplierComponents());
-		if (supplierComponents == null) {
+		if (supplierComponents.isEmpty()) {
 			return Response.status(Response.Status.NOT_FOUND).entity("No SupplierComponent found!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		return Response.ok().entity(supplierComponents).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -408,7 +425,7 @@ public class SupplierResource {
 	                description = "SupplierComponent not found",
 	                content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
-	            		responseCode = "500",
+	            		responseCode = "400",
 	            		description = "SupplierComponent supplierId is less than 1 and/or componentId is less than 1",
 	            		content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
@@ -433,15 +450,17 @@ public class SupplierResource {
 		            schema = @Schema(type = SchemaType.INTEGER)) 
 			@PathParam("componentId") String componentId) {
 		if (supplierId.intValue() <= 0 || Integer.valueOf(supplierId).intValue() <= 0) {
-			return Response.serverError().entity("supplierId/componentId cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("supplierId/componentId cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		SupplierComponentPK supplierComponentPK = new SupplierComponentPK();
 		supplierComponentPK.setComponentId(componentId);
 		supplierComponentPK.setSupplierId(supplierId);
-		SupplierComponent supplierComponent = DtoMapper.mapToSupplierComponentDto(
-				bean.getSupplierComponent(DtoMapper.mapToSupplierComponentPKEntity(supplierComponentPK)));
-		if (supplierComponent == null) {
-			return Response.status(Response.Status.NOT_FOUND).entity("No SupplierComponent found!").type(MediaType.TEXT_PLAIN_TYPE).build();
+		SupplierComponent supplierComponent;
+		try {
+			supplierComponent = DtoMapper.mapToSupplierComponentDto(
+					bean.getSupplierComponent(DtoMapper.mapToSupplierComponentPKEntity(supplierComponentPK)));
+		} catch (SupplierComponentNotFoundException e) {
+			return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
 		return Response.ok().entity(supplierComponent).type(MediaType.APPLICATION_JSON_TYPE).build();
 	}

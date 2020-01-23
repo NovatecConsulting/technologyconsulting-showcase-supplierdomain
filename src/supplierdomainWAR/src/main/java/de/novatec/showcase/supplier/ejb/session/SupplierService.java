@@ -11,6 +11,11 @@ import de.novatec.showcase.supplier.ejb.entity.SComponent;
 import de.novatec.showcase.supplier.ejb.entity.Supplier;
 import de.novatec.showcase.supplier.ejb.entity.SupplierComponent;
 import de.novatec.showcase.supplier.ejb.entity.SupplierComponentPK;
+import de.novatec.showcase.supplier.ejb.session.exception.NoValidSupplierFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.PurchaseOrderLineNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.PurchaseOrderNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.SupplierComponentNotFoundException;
+import de.novatec.showcase.supplier.ejb.session.exception.SupplierNotFoundException;
 
 public interface SupplierService {
 
@@ -28,19 +33,19 @@ public interface SupplierService {
 
 	public Collection<Supplier> getAllSuppliers();
 
-	Supplier getSupplier(Integer supplierId);
+	Supplier getSupplier(Integer supplierId) throws SupplierNotFoundException;
 	
 	public Collection<SupplierComponent> getAllSupplierComponents();
 
-	public SupplierComponent getSupplierComponent(SupplierComponentPK supplierComponentPK);
+	public SupplierComponent getSupplierComponent(SupplierComponentPK supplierComponentPK) throws SupplierComponentNotFoundException;
 
 	public Collection<PurchaseOrder> getAllPurchaseOrders();
 
-	PurchaseOrder getPurchaseOrder(Integer poNumber);
+	PurchaseOrder getPurchaseOrder(Integer poNumber) throws PurchaseOrderNotFoundException;
 
-	PurchaseOrderLine getPurchaseOrderLine(PurchaseOrderLinePK purchaseOrderLinePk);
+	PurchaseOrderLine getPurchaseOrderLine(PurchaseOrderLinePK purchaseOrderLinePk) throws PurchaseOrderLineNotFoundException;
 
-	Collection<PurchaseOrder> purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException;
+	Collection<PurchaseOrder> purchase(ComponentDemands componentDemands) throws NoValidSupplierFoundException, SupplierNotFoundException;
 
 	PurchaseOrder processDelivery(PurchaseOrder purchaseOrder) throws RestcallException;
 }

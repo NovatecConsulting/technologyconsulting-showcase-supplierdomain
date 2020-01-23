@@ -1,4 +1,4 @@
-package de.novatec.showcase.supplier.ejb.session;
+package de.novatec.showcase.supplier.ejb.session.exception;
 
 public class NoValidSupplierFoundException extends Exception {
 
