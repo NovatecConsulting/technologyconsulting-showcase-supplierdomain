@@ -10,6 +10,7 @@ and could be found under the src folder
 
 ## The project consists of the following packages
 
+- **de.novatec.showcase.supplier.dto** - with all related order domain dto's
 - **de.novatec.showcase.supplier.ejb.entity** - with all related order domain entities
 - **de.novatec.showcase.supplier.ejb.session** - with the order domain EJB session beans
 - **de.novatec.showcase.supplier.controller** - with corresponding REST controllers for Item, Customer and Order
@@ -37,8 +38,3 @@ The smoketest.sh script consist of two sub scripts - the setup-db.sh and busines
 
 ## openAPI
 check [openAPI](http://localhost:9080/api/explorer/) if the server is running for the  API of the domain
-
-## TODOs:
-
-- Better REST Responses including status codes
-- some validations to avoid NPE's

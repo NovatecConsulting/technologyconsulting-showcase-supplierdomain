@@ -3,19 +3,27 @@ package de.novatec.showcase.supplier.dto;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Schema(name="SupplierComponent", description="POJO that represents a supplier component.")
 public class SupplierComponent {
 
+	@Size(max = 20)
 	private String componentId;
 	
+	@NotNull
 	private Integer supplierId;
 
 	private int deliveryInDays;
 
+	@Digits(integer = 6, fraction = 4)
 	private BigDecimal discount;
 
+	@Digits(integer = 12, fraction = 2)
 	private BigDecimal price;
 
 	private int quantityForDiscount;

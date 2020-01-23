@@ -2,6 +2,9 @@ package de.novatec.showcase.supplier.dto;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Schema(name="Supplier", description="POJO that represents a supplier.")
@@ -9,22 +12,27 @@ public class Supplier {
 
 	private Integer id;
 
+	@Size(max = 25)
 	private String contact;
 
+	@Size(max = 16)
 	private String name;
 
+	@Size(max = 128)
 	private String replyUrl;
 
 	private Integer version;
 
+	@Size(max = 128)
 	private String wsUrl;
 
+	@Valid
 	private Address address;
 	
     public Supplier() {
     }
 
-	public Supplier(String name, String contact, String replyUrl, String wsUrl, Address address) {
+	public Supplier(String name, String contact, String replyUrl, String wsUrl, @Valid Address address) {
 		super();
 		this.name = name;
 		this.contact = contact;

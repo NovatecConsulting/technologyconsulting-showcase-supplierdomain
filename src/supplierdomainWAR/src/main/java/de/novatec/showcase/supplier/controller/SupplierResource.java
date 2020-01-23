@@ -5,6 +5,8 @@ import java.util.Collection;
 import javax.annotation.ManagedBean;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -58,11 +60,15 @@ public class SupplierResource {
 	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
 	@APIResponses(
 	        value = {
-	            @APIResponse(
-	                responseCode = "201",
-	                description = "The new created supplier.",
-	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(implementation = Supplier.class))) })
+	    	        @APIResponse(
+	    			        responseCode = "400",
+	    			        description = "Supplier is not valid",
+	    			        content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+	    	        @APIResponse(
+	    	        		responseCode = "201",
+	    	        		description = "The new created supplier.",
+	    	        		content = @Content(mediaType = MediaType.APPLICATION_JSON,
+	    	        		schema = @Schema(implementation = Supplier.class))) })
 		@RequestBody(
             name="supplier",
             content = @Content(
@@ -74,7 +80,7 @@ public class SupplierResource {
 	@Operation(
 			summary = "Create an new supplier",
 			description = "Create an new suplier for from the given suppier object.")
-	public Response createSupplier(Supplier supplier, @Context UriInfo uriInfo) {
+	public Response createSupplier(@Valid Supplier supplier, @Context UriInfo uriInfo) {
 		return Response.created(uriInfo.getAbsolutePathBuilder().build())
 				.entity(DtoMapper.mapToSupplierDto(bean.createSupplier(DtoMapper.mapToSupplierEntity(supplier))))
 				.build();
@@ -133,7 +139,7 @@ public class SupplierResource {
 		            required = true,
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
-			@PathParam("id") Integer supplierId) {
+			@PathParam("id") @NotNull Integer supplierId) {
 		if (supplierId.intValue() <= 0) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("Id cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
@@ -155,11 +161,15 @@ public class SupplierResource {
 	@Tags(value= {@Tag(name = "SupplierComponent")})
 	@APIResponses(
 	        value = {
-	            @APIResponse(
-	                responseCode = "201",
-	                description = "The new created supplier component.",
-	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(implementation = SupplierComponent.class))) })
+	    	        @APIResponse(
+	    			        responseCode = "400",
+	    			        description = "SupplierComponent is not valid",
+	    			        content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+	    	        @APIResponse(
+	    	        		responseCode = "201",
+	    	        		description = "The new created supplier component.",
+	    	        		content = @Content(mediaType = MediaType.APPLICATION_JSON,
+	    	        		schema = @Schema(implementation = SupplierComponent.class))) })
 		@RequestBody(
             name="supplierComponent",
             content = @Content(
@@ -171,7 +181,7 @@ public class SupplierResource {
 	@Operation(
 			summary = "Create an new supplier component",
 			description = "Create an new suplier component for from the given suppier object.")
-	public Response createSupplierComponent(SupplierComponent supplierComponent, @Context UriInfo uriInfo) {
+	public Response createSupplierComponent(@Valid SupplierComponent supplierComponent, @Context UriInfo uriInfo) {
 		return Response.created(uriInfo.getAbsolutePathBuilder().build())
 				.entity(DtoMapper.mapToSupplierComponentDto(
 						bean.createSupplierComponent(DtoMapper.mapToSupplierComponentEntity(supplierComponent))))
@@ -186,14 +196,18 @@ public class SupplierResource {
 	@APIResponses(
 	        value = {
 		        @APIResponse(
-			        responseCode = "404",
-			        description = "No valid supplier found",
-			        content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+		        		responseCode = "400",
+		        		description = "ComponentDemands are not valid",
+		        		content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+		        @APIResponse(
+		        		responseCode = "404",
+		        		description = "No valid supplier found",
+		        		content = @Content(mediaType = MediaType.TEXT_PLAIN)),
 	            @APIResponse(
-	                responseCode = "201",
-	                description = "New purchase orders are created.",
-	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
-	                schema = @Schema(type = SchemaType.ARRAY, implementation = PurchaseOrder.class))) })
+	            		responseCode = "201",
+	            		description = "New purchase orders are created.",
+	            		content = @Content(mediaType = MediaType.APPLICATION_JSON,
+	            		schema = @Schema(type = SchemaType.ARRAY, implementation = PurchaseOrder.class))) })
 		@RequestBody(
             name="componentDemands",
             content = @Content(
@@ -205,7 +219,7 @@ public class SupplierResource {
 	@Operation(
 			summary = "Do a purchase",
 			description = "Do a purchase with a list of component demands.")
-	public Response purchase(ComponentDemands componentDemands, @Context UriInfo uriInfo) {
+	public Response purchase(@Valid ComponentDemands componentDemands, @Context UriInfo uriInfo) {
 		Collection<PurchaseOrder> purchaseOrders;
 		try {
 			purchaseOrders = DtoMapper.mapToPurchaseOrderDto(bean.purchase(componentDemands));
@@ -246,7 +260,7 @@ public class SupplierResource {
 		            required = true,
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
-			@PathParam("poNumber") Integer poNumber, @Context UriInfo uriInfo) {
+			@PathParam("poNumber") @NotNull Integer poNumber, @Context UriInfo uriInfo) {
 		PurchaseOrder purchaseOrder;
 		try {
 			purchaseOrder = DtoMapper.mapToPurchaseOrderDto(bean.getPurchaseOrder(poNumber));
@@ -319,7 +333,7 @@ public class SupplierResource {
 		            required = true,
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
-			@PathParam("poNumber") Integer poNumber) {
+			@PathParam("poNumber") @NotNull Integer poNumber) {
 		if (poNumber.intValue() <= 0) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("poNumber cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
@@ -362,13 +376,13 @@ public class SupplierResource {
 		            required = true,
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
-			@PathParam("poNumber") Integer poNumber,
+			@PathParam("poNumber") @NotNull Integer poNumber,
 			@Parameter(
 		            description = "The polNumber of the PurchaseOrderLIne which should be retrieved.",
 		            required = true,
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
-			@PathParam("polNumber") Integer polNumber) {
+			@PathParam("polNumber") @NotNull Integer polNumber) {
 		if (poNumber.intValue() <= 0 || polNumber.intValue() <= 0) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("poNumber/polNumber cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
@@ -442,13 +456,13 @@ public class SupplierResource {
 		            required = true,
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
-			@PathParam("supplierId") Integer supplierId,
+			@PathParam("supplierId") @NotNull Integer supplierId,
 			@Parameter(
 		            description = "The componentId of the SupplierComponent which should be retrieved.",
 		            required = true,
 		            example = "1",
 		            schema = @Schema(type = SchemaType.INTEGER)) 
-			@PathParam("componentId") String componentId) {
+			@PathParam("componentId") @NotNull String componentId) {
 		if (supplierId.intValue() <= 0 || Integer.valueOf(supplierId).intValue() <= 0) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("supplierId/componentId cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
 		}
