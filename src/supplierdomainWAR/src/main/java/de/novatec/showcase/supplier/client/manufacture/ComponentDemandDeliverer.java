@@ -28,7 +28,7 @@ public class ComponentDemandDeliverer {
 	private static final String JNDI_PROPERTY_MANUFACTUREDOMAIN_DELIVER_URL = "manufacturedomain.deliver.url";
 	private static final String JNDI_PROPERTY_MANUFACTUREDOMAIN_USERNAME = "manufacturedomain.username";
 	private static final String JNDI_PROPERTY_MANUFACTUREDOMAIN_PASSWORD = "manufacturedomain.password";
-	private static final Logger log = LoggerFactory.getLogger(ComponentDemandDeliverer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ComponentDemandDeliverer.class);
 	private String deliverUrl;
 	private String username;
 	private String password;
@@ -45,14 +45,16 @@ public class ComponentDemandDeliverer {
 			username = (String) new InitialContext().lookup(JNDI_PROPERTY_MANUFACTUREDOMAIN_USERNAME);
 			password = (String) new InitialContext().lookup(JNDI_PROPERTY_MANUFACTUREDOMAIN_PASSWORD);
 		} catch (NamingException e) {
-			log.warn("JNDI properties " + JNDI_PROPERTY_MANUFACTUREDOMAIN_DELIVER_URL + " or "
+			LOG.warn("JNDI properties " + JNDI_PROPERTY_MANUFACTUREDOMAIN_DELIVER_URL + " or "
 					+ JNDI_PROPERTY_MANUFACTUREDOMAIN_USERNAME + " or " + JNDI_PROPERTY_MANUFACTUREDOMAIN_PASSWORD
 					+ " not found! Using system properties where possible!", e);
 			throw new ManufactureDomainNotConfiguredException(
 					"One or more JNDI properties for the manufacture domain is/are missing!");
 		}
-		// TODO add check if variables values start with ${env. so that there is no
-		// replacement in the server.xml done
+		if (validateJNDIProperty(deliverUrl) || validateJNDIProperty(username) || validateJNDIProperty(password)) {
+			throw new ManufactureDomainNotConfiguredException(
+					"One or more JNDI properties for the manufacture domain are missing in the server.env file of open liberty!");
+		}
 	}
 
 	public void deliver(List<ComponentDemand> componentDemands) throws RestcallException {
@@ -73,5 +75,9 @@ public class ComponentDemandDeliverer {
 	private static Builder asUser(Builder builder, String userName, String password) {
 		return builder.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_USERNAME, userName)
 				.property(HttpAuthenticationFeature.HTTP_AUTHENTICATION_BASIC_PASSWORD, password);
+	}
+	
+	private boolean validateJNDIProperty(String value) {
+		return value.startsWith("${env.");
 	}
 }
