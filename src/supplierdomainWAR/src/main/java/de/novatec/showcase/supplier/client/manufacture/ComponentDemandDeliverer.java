@@ -2,6 +2,7 @@ package de.novatec.showcase.supplier.client.manufacture;
 
 import java.util.List;
 
+import javax.annotation.ManagedBean;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.client.Client;
@@ -21,40 +22,38 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import de.novatec.showcase.supplier.dto.ComponentDemand;
 import de.novatec.showcase.supplier.dto.ComponentDemands;
 
+@ManagedBean
 public class ComponentDemandDeliverer {
 
 	private static final String JNDI_PROPERTY_MANUFACTUREDOMAIN_DELIVER_URL = "manufacturedomain.deliver.url";
 	private static final String JNDI_PROPERTY_MANUFACTUREDOMAIN_USERNAME = "manufacturedomain.username";
 	private static final String JNDI_PROPERTY_MANUFACTUREDOMAIN_PASSWORD = "manufacturedomain.password";
 	private static final Logger log = LoggerFactory.getLogger(ComponentDemandDeliverer.class);
-	private static final String USERNAME = System.getProperty("username.manufacture");
-	private static final String PASSWORD = System.getProperty("password.manufacture");
-	private static final String PORT = System.getProperty("http.port.manufacture");
-	private static final String BASE_URL = "http://localhost:" + PORT + "/manufacturedomain/";
-
-	private static final String COMPONENT_URL = BASE_URL + "component/";
-	private static final String DELIVER_URL = COMPONENT_URL + "deliver/";
-	private String deliverUrl = DELIVER_URL;
-	private String username = USERNAME;
-	private String password = PASSWORD;
+	private String deliverUrl;
+	private String username;
+	private String password;
 	private Client client;
 
-	public ComponentDemandDeliverer() {
+	public ComponentDemandDeliverer() throws ManufactureDomainNotConfiguredException {
 		client = ClientBuilder.newClient();
 		client.register(JacksonJsonProvider.class);
 		HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder().build();
 		client.register(feature);
 
 		try {
-			deliverUrl = (String)new InitialContext().lookup(JNDI_PROPERTY_MANUFACTUREDOMAIN_DELIVER_URL);
-			username = (String)new InitialContext().lookup(JNDI_PROPERTY_MANUFACTUREDOMAIN_USERNAME);
-			password = (String)new InitialContext().lookup(JNDI_PROPERTY_MANUFACTUREDOMAIN_PASSWORD);
+			deliverUrl = (String) new InitialContext().lookup(JNDI_PROPERTY_MANUFACTUREDOMAIN_DELIVER_URL);
+			username = (String) new InitialContext().lookup(JNDI_PROPERTY_MANUFACTUREDOMAIN_USERNAME);
+			password = (String) new InitialContext().lookup(JNDI_PROPERTY_MANUFACTUREDOMAIN_PASSWORD);
 		} catch (NamingException e) {
-			log.warn("JNDI properties " + JNDI_PROPERTY_MANUFACTUREDOMAIN_DELIVER_URL + " or " +
-					JNDI_PROPERTY_MANUFACTUREDOMAIN_USERNAME + " or " +
-					JNDI_PROPERTY_MANUFACTUREDOMAIN_PASSWORD + " not found! Using system properties where possible!", e);
+			log.warn("JNDI properties " + JNDI_PROPERTY_MANUFACTUREDOMAIN_DELIVER_URL + " or "
+					+ JNDI_PROPERTY_MANUFACTUREDOMAIN_USERNAME + " or " + JNDI_PROPERTY_MANUFACTUREDOMAIN_PASSWORD
+					+ " not found! Using system properties where possible!", e);
+			throw new ManufactureDomainNotConfiguredException(
+					"One or more JNDI properties for the manufacture domain is/are missing!");
 		}
-}
+		// TODO add check if variables values start with ${env. so that there is no
+		// replacement in the server.xml done
+	}
 
 	public void deliver(List<ComponentDemand> componentDemands) throws RestcallException {
 		WebTarget target = client.target(deliverUrl);
@@ -64,7 +63,7 @@ public class ComponentDemandDeliverer {
 			return;
 		}
 		throw new RestcallException(
-				"Http Status " + Response.Status.fromStatusCode(response.getStatus()) + " while calling " + DELIVER_URL + " with " + componentDemands + ". " + response.readEntity(String.class));
+				"Http Status " + Response.Status.fromStatusCode(response.getStatus()) + " while calling " + deliverUrl + " with " + componentDemands + ". " + response.readEntity(String.class));
 	}
 
 	private Builder asAdmin(Builder builder) {

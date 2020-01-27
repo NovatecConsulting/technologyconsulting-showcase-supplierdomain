@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -19,10 +20,10 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.novatec.showcase.supplier.dto.ComponentDemand;
-import de.novatec.showcase.supplier.dto.ComponentDemands;
 import de.novatec.showcase.supplier.client.manufacture.ComponentDemandDeliverer;
 import de.novatec.showcase.supplier.client.manufacture.RestcallException;
+import de.novatec.showcase.supplier.dto.ComponentDemand;
+import de.novatec.showcase.supplier.dto.ComponentDemands;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrder;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLine;
 import de.novatec.showcase.supplier.ejb.entity.PurchaseOrderLinePK;
@@ -46,7 +47,8 @@ public class SupplierSession implements SupplierSessionLocal {
 	@PersistenceContext
 	private EntityManager em;
 	
-	private ComponentDemandDeliverer componentDemandDeliverer = new ComponentDemandDeliverer();
+	@Inject
+	private ComponentDemandDeliverer componentDemandDeliverer;
 
 	private Supplier findSupplier(ComponentDemand componentDemand) throws NoValidSupplierFoundException, SupplierNotFoundException {
 		TypedQuery<SupplierComponent> query = em.createNamedQuery(SupplierComponent.FIND_SUPPCOMPONENT_BY_COMPONENT_ID,
