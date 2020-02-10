@@ -1,13 +1,17 @@
 #!/bin/bash
+declare HOST=localhost
+declare PORT=9080
 
-# create suppliers
-curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_1.json http://localhost:9080/supplierdomain/supplier
-curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_2.json http://localhost:9080/supplierdomain/supplier
-curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_3.json http://localhost:9080/supplierdomain/supplier
+. `dirname $0`/options.sh
+. `dirname $0`/supplierdomain.sh
 
-# create supplier component
-curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_component_1_1.json http://localhost:9080/supplierdomain/supplier/supplier_component
-curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_component_2_1.json http://localhost:9080/supplierdomain/supplier/supplier_component
-curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_component_2_2.json http://localhost:9080/supplierdomain/supplier/supplier_component
-curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_component_3_2.json http://localhost:9080/supplierdomain/supplier/supplier_component
-curl -u admin:adminpwd --header "Content-Type: application/json" --request POST --data @data/supplier_component_3_3.json http://localhost:9080/supplierdomain/supplier/supplier_component
+
+function main_setup
+{
+	script_options
+
+	# supplier setup runs only once!
+	setup
+}
+
+main_setup $@
