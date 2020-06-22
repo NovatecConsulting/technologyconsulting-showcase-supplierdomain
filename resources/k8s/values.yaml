@@ -1,0 +1,22 @@
+app: 
+  image:
+    repository: 
+    tag: 
+    pullsecret:
+  appconfig:
+    httpport: 9080
+    httpsport: 9443
+    MANUFACTURE_DELIVER_URL: http://manufacturedomain-service:80/manufacturedomain/component/deliver/
+    MANUFACTURE_USER: 
+    MANUFACTURE_PASSWORD: 
+  dbconfig:
+    host: 
+    user: 
+    password: 
+    schema: 
+  scale:
+    minReplica: 1
+    maxReplicas: 3
+  azureconfig:
+    resourcegroup: 
+    loadbalancerip: 
