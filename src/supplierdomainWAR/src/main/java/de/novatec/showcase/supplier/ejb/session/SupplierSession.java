@@ -164,6 +164,14 @@ public class SupplierSession implements SupplierSessionLocal {
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public Supplier cancelSupplier(Integer supplierId) throws SupplierNotFoundException {
+		Supplier supplier = this.getSupplier(supplierId);
+		em.remove(supplier);
+		return supplier;
+	}	
+
+	@Override
 	public Collection<SupplierComponent> getAllSupplierComponents() {
 		return em.createNamedQuery(SupplierComponent.FIND_ALL_SUPPCOMPONENT, SupplierComponent.class).getResultList();
 	}

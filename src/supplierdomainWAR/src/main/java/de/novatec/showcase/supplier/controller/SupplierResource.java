@@ -8,6 +8,7 @@ import javax.ejb.EJB;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -152,6 +153,47 @@ public class SupplierResource {
 		}
 		return Response.ok().entity(supplier).type(MediaType.APPLICATION_JSON_TYPE).build();
 	}
+	
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path(value = "{id}")
+	@RolesAllowed({GlobalConstants.ADMIN_ROLE_NAME})
+	@APIResponses(
+	        value = {
+ 		       @APIResponse(
+ 			    		responseCode = "400",
+ 			            description = "Supplier id is less than 1",
+ 			            content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+	            @APIResponse(
+		                responseCode = "404",
+		                description = "Supplier with the given id not found",
+		                content = @Content(mediaType = MediaType.TEXT_PLAIN)),
+	            @APIResponse(
+	                responseCode = "200",
+	                description = "The supplier with the given id was deleted if found.",
+	                content = @Content(mediaType = MediaType.APPLICATION_JSON,
+	                schema = @Schema(implementation = Supplier.class))) })
+	    @Operation(
+	        summary = "Delete supplier by id",
+	        description = "Delete the supplier with the given id if it is found.")
+	public Response deleteSupplier(
+			@Parameter(
+		            description = "The id of the supplier which should be deleted.",
+		            required = true,
+		            example = "1",
+		            schema = @Schema(type = SchemaType.INTEGER)) 
+			@PathParam("id") Integer supplierId) {
+		if (supplierId.intValue() <= 0) {
+			return Response.status(Response.Status.BAD_REQUEST).entity("Supplier id cannot be less than 1!").type(MediaType.TEXT_PLAIN_TYPE).build();
+		}
+		try {
+			return Response.ok().entity(DtoMapper.mapToSupplierDto(bean.cancelSupplier(supplierId))).type(MediaType.APPLICATION_JSON_TYPE).build();
+		} catch (SupplierNotFoundException e) {
+			return Response.status(Response.Status.NOT_FOUND)
+					.entity(e.getMessage()).type(MediaType.TEXT_PLAIN_TYPE).build();
+		}
+	}
+
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)

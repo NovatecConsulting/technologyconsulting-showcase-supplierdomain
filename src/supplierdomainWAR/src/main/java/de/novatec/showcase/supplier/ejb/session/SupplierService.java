@@ -35,6 +35,8 @@ public interface SupplierService {
 
 	Supplier getSupplier(Integer supplierId) throws SupplierNotFoundException;
 	
+	Supplier cancelSupplier(Integer supplierId) throws SupplierNotFoundException;
+
 	public Collection<SupplierComponent> getAllSupplierComponents();
 
 	public SupplierComponent getSupplierComponent(SupplierComponentPK supplierComponentPK) throws SupplierComponentNotFoundException;
