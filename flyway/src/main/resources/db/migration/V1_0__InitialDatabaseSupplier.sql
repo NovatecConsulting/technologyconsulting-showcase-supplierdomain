@@ -141,6 +141,70 @@ CREATE TABLE public.u_sequences (
 
 ALTER TABLE public.u_sequences OWNER TO supplier_user;
 
+
+--
+-- Name: s_component s_component_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
+--
+
+ALTER TABLE ONLY public.s_component
+    ADD CONSTRAINT s_component_pkey PRIMARY KEY (comp_id);
+
+
+--
+-- Name: s_purchase_order s_purchase_order_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
+--
+
+ALTER TABLE ONLY public.s_purchase_order
+    ADD CONSTRAINT s_purchase_order_pkey PRIMARY KEY (po_number);
+
+
+--
+-- Name: s_purchase_orderline s_purchase_orderline_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
+--
+
+ALTER TABLE ONLY public.s_purchase_orderline
+    ADD CONSTRAINT s_purchase_orderline_pkey PRIMARY KEY (pol_number, pol_po_id);
+
+
+--
+-- Name: s_supp_component s_supp_component_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
+--
+
+ALTER TABLE ONLY public.s_supp_component
+    ADD CONSTRAINT s_supp_component_pkey PRIMARY KEY (sc_p_id, sc_supp_id);
+
+
+--
+-- Name: s_supplier s_supplier_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
+--
+
+ALTER TABLE ONLY public.s_supplier
+    ADD CONSTRAINT s_supplier_pkey PRIMARY KEY (supp_id);
+
+
+--
+-- Name: sequence sequence_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
+--
+
+ALTER TABLE ONLY public.sequence
+    ADD CONSTRAINT sequence_pkey PRIMARY KEY (seq_name);
+
+
+--
+-- Name: u_sequences u_sequences_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
+--
+
+ALTER TABLE ONLY public.u_sequences
+    ADD CONSTRAINT u_sequences_pkey PRIMARY KEY (s_id);
+
+
+--
+-- Name: s_purchase_orderline fk_s_purchase_orderline_pol_po_id; Type: FK CONSTRAINT; Schema: public; Owner: supplier_user
+--
+
+ALTER TABLE ONLY public.s_purchase_orderline
+    ADD CONSTRAINT fk_s_purchase_orderline_pol_po_id FOREIGN KEY (pol_po_id) REFERENCES public.s_purchase_order(po_number);
+
 --
 -- PostgreSQL database dump complete
 --

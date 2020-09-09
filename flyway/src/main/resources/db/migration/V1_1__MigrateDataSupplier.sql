@@ -5,6 +5,25 @@
 -- Dumped from database version 11.9 (Debian 11.9-1.pgdg90+1)
 -- Dumped by pg_dump version 11.9 (Debian 11.9-1.pgdg90+1)
 
+
+--
+-- Data for Name: sequence; Type: TABLE DATA; Schema: public; Owner: supplier_user
+--
+
+COPY public.sequence (seq_name, seq_count) FROM stdin;
+SEQ_GEN_TABLE	0
+\.
+
+
+--
+-- Data for Name: u_sequences; Type: TABLE DATA; Schema: public; Owner: supplier_user
+--
+
+COPY public.u_sequences (s_id, s_nextnum) FROM stdin;
+S_SEQ	3
+\.
+
+
 --
 -- Data for Name: s_component; Type: TABLE DATA; Schema: public; Owner: supplier_user
 --
@@ -53,86 +72,9 @@ COPY public.s_supplier (supp_id, supp_contact, supp_name, supp_reply_url, supp_v
 \.
 
 
---
--- Data for Name: sequence; Type: TABLE DATA; Schema: public; Owner: supplier_user
---
-
-COPY public.sequence (seq_name, seq_count) FROM stdin;
-SEQ_GEN_TABLE	0
-\.
 
 
---
--- Data for Name: u_sequences; Type: TABLE DATA; Schema: public; Owner: supplier_user
---
 
-COPY public.u_sequences (s_id, s_nextnum) FROM stdin;
-S_SEQ	3
-\.
-
-
---
--- Name: s_component s_component_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
---
-
-ALTER TABLE ONLY public.s_component
-    ADD CONSTRAINT s_component_pkey PRIMARY KEY (comp_id);
-
-
---
--- Name: s_purchase_order s_purchase_order_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
---
-
-ALTER TABLE ONLY public.s_purchase_order
-    ADD CONSTRAINT s_purchase_order_pkey PRIMARY KEY (po_number);
-
-
---
--- Name: s_purchase_orderline s_purchase_orderline_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
---
-
-ALTER TABLE ONLY public.s_purchase_orderline
-    ADD CONSTRAINT s_purchase_orderline_pkey PRIMARY KEY (pol_number, pol_po_id);
-
-
---
--- Name: s_supp_component s_supp_component_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
---
-
-ALTER TABLE ONLY public.s_supp_component
-    ADD CONSTRAINT s_supp_component_pkey PRIMARY KEY (sc_p_id, sc_supp_id);
-
-
---
--- Name: s_supplier s_supplier_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
---
-
-ALTER TABLE ONLY public.s_supplier
-    ADD CONSTRAINT s_supplier_pkey PRIMARY KEY (supp_id);
-
-
---
--- Name: sequence sequence_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
---
-
-ALTER TABLE ONLY public.sequence
-    ADD CONSTRAINT sequence_pkey PRIMARY KEY (seq_name);
-
-
---
--- Name: u_sequences u_sequences_pkey; Type: CONSTRAINT; Schema: public; Owner: supplier_user
---
-
-ALTER TABLE ONLY public.u_sequences
-    ADD CONSTRAINT u_sequences_pkey PRIMARY KEY (s_id);
-
-
---
--- Name: s_purchase_orderline fk_s_purchase_orderline_pol_po_id; Type: FK CONSTRAINT; Schema: public; Owner: supplier_user
---
-
-ALTER TABLE ONLY public.s_purchase_orderline
-    ADD CONSTRAINT fk_s_purchase_orderline_pol_po_id FOREIGN KEY (pol_po_id) REFERENCES public.s_purchase_order(po_number);
 
 
 --
