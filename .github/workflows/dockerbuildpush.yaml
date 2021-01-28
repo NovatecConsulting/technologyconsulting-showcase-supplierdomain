@@ -2,7 +2,7 @@ name: Build and push to Dockerhub
 
 on:
   push:
-    branches: [ master ]
+    branches: [ migrateToPsql ]
 
 jobs:
   build:
