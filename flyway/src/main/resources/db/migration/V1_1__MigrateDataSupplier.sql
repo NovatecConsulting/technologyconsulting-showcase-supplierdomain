@@ -10,18 +10,18 @@
 -- Data for Name: sequence; Type: TABLE DATA; Schema: public; Owner: supplier_user
 --
 
-COPY public.sequence (seq_name, seq_count) FROM stdin;
-SEQ_GEN_TABLE	0
-\.
+--COPY public.sequence (seq_name, seq_count) FROM stdin;
+--SEQ_GEN_TABLE	0
+--\.
 
 
 --
 -- Data for Name: u_sequences; Type: TABLE DATA; Schema: public; Owner: supplier_user
 --
 
-COPY public.u_sequences (s_id, s_nextnum) FROM stdin;
-S_SEQ	3
-\.
+--COPY public.u_sequences (s_id, s_nextnum) FROM stdin;
+--S_SEQ	3
+--\.
 
 
 --

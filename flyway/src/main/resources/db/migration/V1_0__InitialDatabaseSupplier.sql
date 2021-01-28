@@ -39,7 +39,7 @@ CREATE TABLE public.s_component (
 );
 
 
-ALTER TABLE public.s_component OWNER TO supplier_user;
+--ALTER TABLE public.s_component OWNER TO supplier_user;
 
 --
 -- Name: s_purchase_order; Type: TABLE; Schema: public; Owner: supplier_user
@@ -55,7 +55,7 @@ CREATE TABLE public.s_purchase_order (
 );
 
 
-ALTER TABLE public.s_purchase_order OWNER TO supplier_user;
+--ALTER TABLE public.s_purchase_order OWNER TO supplier_user;
 
 --
 -- Name: s_purchase_orderline; Type: TABLE; Schema: public; Owner: supplier_user
@@ -75,7 +75,7 @@ CREATE TABLE public.s_purchase_orderline (
 );
 
 
-ALTER TABLE public.s_purchase_orderline OWNER TO supplier_user;
+--ALTER TABLE public.s_purchase_orderline OWNER TO supplier_user;
 
 --
 -- Name: s_supp_component; Type: TABLE; Schema: public; Owner: supplier_user
@@ -92,7 +92,7 @@ CREATE TABLE public.s_supp_component (
 );
 
 
-ALTER TABLE public.s_supp_component OWNER TO supplier_user;
+--ALTER TABLE public.s_supp_component OWNER TO supplier_user;
 
 --
 -- Name: s_supplier; Type: TABLE; Schema: public; Owner: supplier_user
@@ -115,7 +115,7 @@ CREATE TABLE public.s_supplier (
 );
 
 
-ALTER TABLE public.s_supplier OWNER TO supplier_user;
+--ALTER TABLE public.s_supplier OWNER TO supplier_user;
 
 --
 -- Name: sequence; Type: TABLE; Schema: public; Owner: supplier_user
@@ -127,7 +127,7 @@ CREATE TABLE public.sequence (
 );
 
 
-ALTER TABLE public.sequence OWNER TO supplier_user;
+--ALTER TABLE public.sequence OWNER TO supplier_user;
 
 --
 -- Name: u_sequences; Type: TABLE; Schema: public; Owner: supplier_user
@@ -139,7 +139,7 @@ CREATE TABLE public.u_sequences (
 );
 
 
-ALTER TABLE public.u_sequences OWNER TO supplier_user;
+--ALTER TABLE public.u_sequences OWNER TO supplier_user;
 
 
 --
