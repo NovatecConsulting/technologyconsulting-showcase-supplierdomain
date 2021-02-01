@@ -66,8 +66,9 @@ jobs:
                         --set app.dbconfig.schema="public" \
                         --set app.dbconfig.name="supplier_db" \
                         --set app.networking.ingressfqdn="${INGRESSFQDN}" \
-                        --set app.image.tag="${IMAGETAG}"
-
+                        --set app.image.tag="${IMAGETAG}" \
+                        --set app.azureconfig.resourcegroup="${AKSRESOURCEGROUP}" \
+                        --set app.azureconfig.loadbalancerip="${SUPPLIERDOMAINIP}"
       - name: Cleanup
         working-directory: ./resources/pipelines/helperscripts
         run: |
@@ -76,3 +77,4 @@ jobs:
               echo "DBPWD=asdf" >> $GITHUB_ENV
               echo "DBFQDN=asdf" >> $GITHUB_ENV
               echo "INGRESSFQDN=asdf" >> $GITHUB_ENV
+              echo "SUPPLIERDOMAINIP=asdf" >> $GITHUB_ENV
