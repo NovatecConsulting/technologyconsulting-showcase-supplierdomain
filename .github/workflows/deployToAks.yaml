@@ -25,6 +25,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.TC_SHOWCASE_ARM_TENANT_ID }}
           AKSRESOURCEGROUP: 'tc-showcase-test'
           AKSNAME: 'k8s-tc-showcase-test'
+          STAGE: 'dev'
         working-directory: ./resources/pipelines/helperscripts
         run: |
               ./getKubeconfig.sh
